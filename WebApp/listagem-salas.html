@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Criar Sala</title>
+  <link rel="stylesheet" href="css/listagem-salas.css">
+</head>
+<body>
+  <div class="container">
+
+    <div class="card">
+      <h2>Sala 1 - Bloco 5</h2>
+      <p>ID: 1</p>
+      <p>Status: Ocupada</p>
+      <a href="sala.html">Ver mais</a>
+  </div>
+
+  <div class="card">
+      <h2>Sala 2 - Bloco 5</h2>
+      <p>ID: 2</p>
+      <p>Status: Livre</p>
+      <a href="sala.html">Ver mais</a>
+  </div>
+
+  <div class="add-card">
+    <button id="openPopupBtn">
+      <img src="./img/simb_mais.png" alt="Adition Symbol">
+    </button>  
+  </div>
+
+    <div id="criarSalaPopup" class="popup">
+      <span class="close-btn" onclick="closePopup()">&times;</span>
+      <h2>Criar Sala</h2>
+      <div class="radio-group">
+        <input type="radio" id="criarSalaRadio" name="salaAction" checked onchange="changeContent('criar-sala-content')">
+        <label for="criarSalaRadio">Criar Sala</label>
+      </div>
+      <div class="radio-group">
+        <input type="radio" id="inscreverSalaRadio" name="salaAction" onchange="changeContent('inscrever-sala-content')">
+        <label for="inscreverSalaRadio">Inscrever-se em uma Sala</label>
+      </div>
+      <div class="criar-sala-content show">
+        <label for="nomeSala">Insira o Nome da Sala:</label>
+        <input type="text" id="nomeSala" name="nomeSala">
+
+        <label for="sensorPresenca">Insira o ID do sensor de presença:</label>
+        <input type="text" id="sensorPresenca" name="sensorPresenca">
+
+        <label for="sensorConsumo">Insira o ID do sensor de consumo:</label>
+        <input type="text" id="sensorConsumo" name="sensorConsumo">
+      </div>
+      <div class="inscrever-sala-content">
+        <label for="idSala">Insira o ID da Sala:</label>
+        <input type="text" id="idSala" name="idSala">
+
+        <label for="senhaSala">Insira a senha da Sala:</label>
+        <input type="password" id="senhaSala" name="senhaSala">
+      </div>
+    </div>
+  </div>
+
+  <script src="scripts/exibir-pop-up.js"></script>
+</body>
+</html>
