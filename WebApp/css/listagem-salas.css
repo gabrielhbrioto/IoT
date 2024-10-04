@@ -105,3 +105,17 @@ button#openPopupBtn img {
 .add-card:hover {
   background-color: #e0e0e0;
 }
+
+.btn {
+  background-color: #2196F3;
+  color: #fff;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.btn:hover {
+  background-color: #1976D2;
+}
