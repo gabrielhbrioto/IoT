@@ -14,9 +14,9 @@ public class DatabaseConfig {
             PostgresqlConnectionConfiguration.builder()
                 .host("localhost")
                 .port(5432)
-                .database("seu_banco_de_dados")
-                .username("seu_usuario")
-                .password("sua_senha")
+                .database("IoT")
+                .username("postgres")
+                .password("postgres")
                 .build());
     }
 }
