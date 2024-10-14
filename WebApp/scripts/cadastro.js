@@ -7,51 +7,37 @@ function validarEmail(email) {
 document.getElementById('cadastroForm').addEventListener('submit', function(event) {
     event.preventDefault(); // Previne o envio tradicional do formulário
 
-    // Captura os valores do formulário
     const nome = document.getElementById('nome').value;
     const email = document.getElementById('email').value;
     const senha = document.getElementById('senha').value;
-    const confirmaSenha = document.getElementById('confirmaSenha').value;
 
-    // Validação dos campos
-    if (!validarEmail(email)) {
-        alert('Email inválido. Por favor, insira um email válido.');
-        return; // Cancela o envio se o email for inválido
-    }
-
-    if (senha !== confirmaSenha) {
-        alert('As senhas não coincidem. Tente novamente.');
-        return; // Cancela o envio se as senhas não conferem
-    }
-
-    // Monta o objeto com os dados
     const dados = {
         nome: nome,
         email: email,
         senha: senha
     };
 
-    window.location.href = 'login.html';
-
-    /*// Envia os dados ao servidor usando fetch
-    fetch('https://seu-backend.com/api/cadastro', {
+    fetch('http://localhost:8080/usuarios', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            // Se você estiver usando CSRF, adicione o token aqui
+            // 'X-CSRF-TOKEN': csrfToken
         },
         body: JSON.stringify(dados)
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Redireciona para a página de login se o cadastro foi bem-sucedido
-            window.location.href = 'login.html';
-        } else {
-            alert('Erro ao cadastrar: ' + data.message);
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
         }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Usuário cadastrado:', data);
+        // Redirecionar para a tela de login ou fazer outra ação
+        window.location.href = 'login.html';
     })
     .catch(error => {
-        console.error('Erro ao cadastrar:', error);
-        alert('Erro ao se comunicar com o servidor. Tente novamente mais tarde.');
-    });*/
+        console.error('Erro ao cadastrar o usuário:', error);
+    });
 });

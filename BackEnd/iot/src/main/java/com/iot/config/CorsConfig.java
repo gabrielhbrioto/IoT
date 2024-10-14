@@ -26,9 +26,10 @@ public class CorsConfig implements WebFluxConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("*") // Permite todas as origens, incluindo o Postman
+                .allowedOrigins("http://127.0.0.1:5500") // Especifique a origem exata
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")  // Permite todos os cabeçalhos
-                .allowCredentials(false); // Desabilita envio de credenciais (ajuste conforme necessário)
+                .allowCredentials(true); // Ajuste conforme necessário
     }
 }
+

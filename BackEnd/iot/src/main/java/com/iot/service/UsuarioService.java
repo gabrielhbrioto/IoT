@@ -3,6 +3,7 @@ package com.iot.service;
 import com.iot.model.Usuario;
 import com.iot.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -11,14 +12,16 @@ public class UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public Mono<Usuario> criarUsuario(Usuario usuario) {
+        usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
         return usuarioRepository.save(usuario);
     }
 
     public Mono<Usuario> buscarPorEmailESenha(String email, String senha) {
         return usuarioRepository.findByEmail(email)
-                .filter(usuario -> usuario.getSenha().equals(senha)); // Valida a senha após buscar pelo email
+            .filter(usuario -> passwordEncoder.matches(senha, usuario.getSenha())); // Valida a senha após buscar pelo email
     }
 
     public Mono<Usuario> buscarPorId(Long id) {
