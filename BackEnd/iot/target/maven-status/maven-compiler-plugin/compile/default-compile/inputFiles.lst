@@ -1,13 +1,19 @@
 /home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/App.java
 /home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/config/CorsConfig.java
 /home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/config/DatabaseConfig.java
+/home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/config/JwtAuthenticationConverter.java
+/home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/config/JwtAuthenticationFilter.java
+/home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/config/JwtConfig.java
+/home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/config/JwtUtil.java
 /home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/config/SecurityConfig.java
+/home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/controller/AuthenticationController.java
 /home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/controller/DatabaseController.java
 /home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/controller/InscricaoController.java
 /home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/controller/MedidaController.java
 /home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/controller/SalaController.java
 /home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/controller/SensorController.java
 /home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/controller/UsuarioController.java
+/home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/dto/AuthenticationRequest.java
 /home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/model/Inscricao.java
 /home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/model/Medida.java
 /home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/model/Sala.java
@@ -18,6 +24,7 @@
 /home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/repository/SalaRepository.java
 /home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/repository/SensorRepository.java
 /home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/repository/UsuarioRepository.java
+/home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/service/CustomUserDetailsService.java
 /home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/service/DatabaseService.java
 /home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/service/InscricaoService.java
 /home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/service/MedidaService.java

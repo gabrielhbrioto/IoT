@@ -2,9 +2,14 @@ package com.iot.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.Collections;
 
 @Table("USUARIO")
-public class Usuario {
+public class Usuario implements UserDetails {
 
     @Id
     private Long id;
@@ -49,5 +54,44 @@ public class Usuario {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    // Implementações da interface UserDetails
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        // Retorne uma coleção de autoridades. Aqui você pode retornar um conjunto de autoridades.
+        // Por enquanto, retornando uma coleção vazia, você pode modificar conforme necessário.
+        return Collections.emptyList();
+    }
+
+    @Override
+    public String getPassword() {
+        return this.senha;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email; // Usando o email como nome de usuário
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true; // Ajuste conforme necessário
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true; // Ajuste conforme necessário
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true; // Ajuste conforme necessário
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true; // Ajuste conforme necessário
     }
 }
