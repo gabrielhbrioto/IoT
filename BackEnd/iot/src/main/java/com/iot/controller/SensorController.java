@@ -49,7 +49,7 @@ public class SensorController {
     }
 
     @DeleteMapping("/{id}")
-    public Mono<ResponseEntity<Void>> deleteSensor(@PathVariable Long id) {
+    public Mono<ResponseEntity<Object>> deleteSensor(@PathVariable Long id) {
         return sensorService.deletarSensor(id)
                 .then(Mono.just(ResponseEntity.noContent().build()))
                 .onErrorReturn(ResponseEntity.notFound().build());

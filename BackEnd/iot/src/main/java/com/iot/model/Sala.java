@@ -1,24 +1,16 @@
 package com.iot.model;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.JoinColumn;
 
-@Entity
-@Table(name = "SALA")
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
+
+@Table("SALA")
 public class Sala {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String nome;
 
-    @ManyToOne
-    @JoinColumn(name = "ID_CRIADOR", nullable = false)
     private Usuario criador;
 
     // Getter e Setter para o ID
@@ -48,4 +40,3 @@ public class Sala {
         this.criador = criador;
     }
 }
-

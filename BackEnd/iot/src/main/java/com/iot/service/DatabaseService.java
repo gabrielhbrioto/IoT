@@ -1,21 +1,20 @@
 package com.iot.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 @Service
 public class DatabaseService {
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    // Simulated database connection check
+    public Mono<String> testConnection() {
+        // Example logic to check database connection
+        boolean isConnected = true; // replace with actual connection logic
 
-    public String testConnection() {
-        try {
-            jdbcTemplate.execute("SELECT 1");
-            return "Conexão com o banco de dados bem-sucedida!";
-        } catch (Exception e) {
-            return "Erro ao conectar com o banco de dados: " + e.getMessage();
+        if (isConnected) {
+            return Mono.just("Database connection successful!");
+        } else {
+            return Mono.empty(); // or Mono.error(new RuntimeException("Connection failed"));
         }
     }
 }

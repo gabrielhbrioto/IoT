@@ -4,7 +4,6 @@ import com.iot.model.Usuario;
 import com.iot.service.UsuarioService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -44,7 +43,7 @@ public class UsuarioController {
     }
 
     @DeleteMapping("/{id}")
-    public Mono<ResponseEntity<Void>> deleteUsuario(@PathVariable Long id) {
+    public Mono<ResponseEntity<Object>> deleteUsuario(@PathVariable Long id) {
         return usuarioService.deletarUsuario(id)
                 .then(Mono.just(ResponseEntity.noContent().build()))
                 .onErrorReturn(ResponseEntity.notFound().build());

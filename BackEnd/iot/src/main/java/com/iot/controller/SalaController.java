@@ -49,7 +49,7 @@ public class SalaController {
     }
 
     @DeleteMapping("/{id}")
-    public Mono<ResponseEntity<Void>> deleteSala(@PathVariable Long id) {
+    public Mono<ResponseEntity<Object>> deleteSala(@PathVariable Long id) {
         return salaService.deletarSala(id)
                 .then(Mono.just(ResponseEntity.noContent().build())) // Retorna um ResponseEntity<Void>
                 .onErrorReturn(ResponseEntity.notFound().build()); // Retorna um ResponseEntity<Void>

@@ -1,18 +1,27 @@
 package com.iot.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
 import com.iot.service.DatabaseService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 @RestController
+@RequestMapping("/database")
 public class DatabaseController {
 
-    @Autowired
-    private DatabaseService databaseService;
+    private final DatabaseService databaseService;
 
-    @GetMapping("/test-db-connection")
-    public String testDatabaseConnection() {
-        return databaseService.testConnection();
+    // Injeção de dependência pelo construtor
+    public DatabaseController(DatabaseService databaseService) {
+        this.databaseService = databaseService;
+    }
+
+    @GetMapping("/test-connection")
+    public Mono<ResponseEntity<String>> testDatabaseConnection() {
+        return databaseService.testConnection()
+                .map(connectionResult -> ResponseEntity.ok(connectionResult)) // Retorna a conexão com status 200
+                .defaultIfEmpty(ResponseEntity.status(500).body("Failed to connect to the database")); // Retorno padrão em caso de erro
     }
 }

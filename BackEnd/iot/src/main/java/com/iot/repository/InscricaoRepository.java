@@ -1,6 +1,6 @@
 package com.iot.repository;
 import com.iot.model.Inscricao;
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import org.springframework.data.r2dbc.repository.R2dbcRepository;
 
-public interface InscricaoRepository extends ReactiveCrudRepository<Inscricao, Long> {
+public interface InscricaoRepository extends R2dbcRepository<Inscricao, Long> {
 }
