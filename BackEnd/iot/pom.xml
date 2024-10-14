@@ -1,0 +1,98 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.iot</groupId>
+  <artifactId>iot</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>iot</name>
+  <url>http://maven.apache.org</url>
+
+  <properties>
+      <java.version>17</java.version> 
+      <spring.boot.version>3.0.0</spring.boot.version> 
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    
+    <!-- Spring WebFlux -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-webflux</artifactId>
+        <version>${spring.boot.version}</version>
+    </dependency>
+
+    <!-- Spring Web MVC -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+        <version>${spring.boot.version}</version>
+    </dependency>
+
+    <!-- Spring Data R2DBC -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-r2dbc</artifactId>
+        <version>${spring.boot.version}</version>
+    </dependency>
+
+    <!-- Dependência do Spring Data JPA -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-jpa</artifactId>
+        <version>${spring.boot.version}</version>
+    </dependency>
+
+    <!-- MQTT (Eclipse Paho) -->
+    <dependency>
+        <groupId>org.eclipse.paho</groupId>
+        <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
+        <version>1.2.5</version>
+    </dependency>
+
+    <!-- Spring Security -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-security</artifactId>
+        <version>${spring.boot.version}</version>
+    </dependency>
+
+    <!-- Dependência do PostgreSQL -->
+    <dependency>
+        <groupId>org.postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+        <version>42.7.4</version> <!-- Atualize a versão aqui -->
+    </dependency>
+
+    <!-- Banco de dados reativo (PostgreSQL) -->
+    <!-- <dependency>
+            <groupId>io.r2dbc</groupId>
+            <artifactId>r2dbc-postgresql</artifactId>
+        </dependency> -->
+  </dependencies>
+
+  <build>
+      <plugins>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-compiler-plugin</artifactId>
+              <version>3.8.1</version> <!-- Certifique-se de usar uma versão do plugin -->
+              <configuration>
+                  <source>${java.version}</source> <!-- Use a versão do Java definida -->
+                  <target>${java.version}</target> <!-- Use a versão do Java definida -->
+              </configuration>
+          </plugin>
+          <plugin>
+              <groupId>org.springframework.boot</groupId>
+              <artifactId>spring-boot-maven-plugin</artifactId>
+              <version>${spring.boot.version}</version>
+          </plugin>
+      </plugins>
+  </build>
+</project>
