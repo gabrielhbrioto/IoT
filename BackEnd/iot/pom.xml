@@ -22,55 +22,55 @@
             <version>3.8.1</version>
             <scope>test</scope>
         </dependency>
-        
+    
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>6.1.0</version>
+        </dependency>
+    
         <!-- Spring WebFlux -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
             <version>${spring.boot.version}</version>
         </dependency>
-
+    
         <dependency>
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
             <version>7.0.0</version>
         </dependency>
-
+    
         <!-- Spring Data R2DBC -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-r2dbc</artifactId>
             <version>${spring.boot.version}</version>
         </dependency>
-
+    
         <!-- Banco de dados reativo (PostgreSQL) -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>r2dbc-postgresql</artifactId>
             <version>1.0.6.RELEASE</version>
         </dependency>
-
+    
         <!-- MQTT (Eclipse Paho) -->
         <dependency>
             <groupId>org.eclipse.paho</groupId>
             <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
             <version>1.2.5</version>
         </dependency>
-
+    
         <!-- Spring Security -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
             <version>${spring.boot.version}</version>
         </dependency>
-
-        <!-- Dependência para o Spring Data JPA -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-            <version>${spring.boot.version}</version>
-        </dependency>
     </dependencies>
+
 
     <build>
         <pluginManagement>
