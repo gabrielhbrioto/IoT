@@ -1,6 +1,7 @@
 package com.iot.controller;
 
 import com.iot.config.JwtUtil;
+import com.iot.dto.LoginRequest;
 import com.iot.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,9 +19,9 @@ public class AuthenticationController {
     private JwtUtil jwtUtil;  // Injetando JwtUtil
 
     @PostMapping("/login")
-    public Mono<String> login(@RequestParam String email, @RequestParam String senha) {
-        System.out.printf("Tentativa de login com o email: %s\n", email);
-        return usuarioService.buscarPorEmailESenha(email, senha)
+    public Mono<String> login(@RequestBody LoginRequest loginRequest) {
+        System.out.printf("Tentativa de login com o email: %s\n", loginRequest.getEmail());
+        return usuarioService.buscarPorEmailESenha(loginRequest.getEmail(), loginRequest.getSenha())
             .flatMap(usuario -> {
                 String token = jwtUtil.generateToken(usuario.getEmail());
                 return Mono.just(token);
