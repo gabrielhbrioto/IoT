@@ -1,8 +1,8 @@
 package com.iot.controller;
 
+import com.iot.config.JwtUtil;
+import com.iot.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import reactor.core.publisher.Mono;
@@ -12,17 +12,19 @@ import reactor.core.publisher.Mono;
 public class AuthenticationController {
 
     @Autowired
-    private ReactiveUserDetailsService userDetailsService; // Alterado para ReactiveUserDetailsService
+    private UsuarioService usuarioService;
+
+    @Autowired
+    private JwtUtil jwtUtil;  // Injetando JwtUtil
 
     @PostMapping("/login")
-    public Mono<UserDetails> login(@RequestParam String email, @RequestParam String senha) {
-        return userDetailsService.findByUsername(email)
-            .flatMap(userDetails -> {
-                // Adicione aqui sua lógica de autenticação, por exemplo, verificar a senha
-                if (userDetails.getPassword().equals(senha)) {
-                    return Mono.just(userDetails);
-                }
-                return Mono.error(new RuntimeException("Senha incorreta"));
-            });
+    public Mono<String> login(@RequestParam String email, @RequestParam String senha) {
+        System.out.printf("Tentativa de login com o email: %s\n", email);
+        return usuarioService.buscarPorEmailESenha(email, senha)
+            .flatMap(usuario -> {
+                String token = jwtUtil.generateToken(usuario.getEmail());
+                return Mono.just(token);
+            })
+            .switchIfEmpty(Mono.error(new RuntimeException("Credenciais inválidas")));
     }
 }

@@ -11,7 +11,7 @@ import javax.crypto.spec.SecretKeySpec;
 @Configuration
 public class JwtConfig {
 
-    private final String SECRET_KEY = "your_secret_key";  // Substitua pela sua chave secreta
+    private final String SECRET_KEY = "4zqxo88KGnvzSD9DR6HfU1z9n7zu/e5U/l7UM4Bvuew=";  // Substitua pela sua chave secreta
 
     @Bean
     public JwtDecoder jwtDecoder() {

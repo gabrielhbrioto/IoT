@@ -13,7 +13,7 @@ import java.util.Map;
 
 @Component
 public class JwtUtil {
-    private final String SECRET_KEY = "your_secret_key"; // substitua pela sua chave secreta (deve ter comprimento adequado para o algoritmo)
+    private final String SECRET_KEY = "4zqxo88KGnvzSD9DR6HfU1z9n7zu/e5U/l7UM4Bvuew="; 
     private final long EXPIRATION_TIME = 1000 * 60 * 60; // 1 hora
 
     // Gera a chave secreta como um Key objeto
@@ -46,11 +46,11 @@ public class JwtUtil {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parserBuilder() // Substitui parser() por parserBuilder()
-                .setSigningKey(getSigningKey()) // Usa Key para assinar
-                .build() // Constrói o parser
-                .parseClaimsJws(token) // Analisa o token JWT
-                .getBody(); // Obtém o corpo das claims
+        return Jwts.parserBuilder() 
+                .setSigningKey(getSigningKey()) 
+                .build() 
+                .parseClaimsJws(token) 
+                .getBody(); 
     }
 
     private boolean isTokenExpired(String token) {

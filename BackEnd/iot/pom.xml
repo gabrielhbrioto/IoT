@@ -137,6 +137,7 @@
                     <compilerArgs>
                         <arg>--add-opens</arg>
                         <arg>java.base/java.lang=ALL-UNNAMED</arg>
+                        <arg>-parameters</arg>
                     </compilerArgs>
                 </configuration>
             </plugin>
