@@ -20,6 +20,7 @@ public class UsuarioService {
     }
 
     public Mono<Usuario> buscarPorEmailESenha(String email, String senha) {
+        System.out.printf("Buscando usuario pelo email %s...\n", email);
         return usuarioRepository.findByEmail(email)
             .filter(usuario -> passwordEncoder.matches(senha, usuario.getSenha())); // Valida a senha após buscar pelo email
     }
