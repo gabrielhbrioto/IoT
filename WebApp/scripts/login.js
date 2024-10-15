@@ -27,8 +27,6 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
             // Salva o JWT no sessionStorage
             sessionStorage.setItem('token', token);
 
-            console.log("Login efetuado com sucesso!");
-
             // Redireciona para a página de listagem de salas
             window.location.href = 'listagem-salas.html';
         } else {
