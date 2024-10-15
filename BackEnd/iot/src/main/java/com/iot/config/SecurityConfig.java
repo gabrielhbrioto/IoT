@@ -6,18 +6,14 @@ import org.springframework.security.authentication.ReactiveAuthenticationManager
 import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
-<<<<<<< HEAD
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsConfigurationSource;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
-=======
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
-import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
->>>>>>> dev
 
 @Configuration
 public class SecurityConfig {
@@ -34,19 +30,9 @@ public class SecurityConfig {
     }
 
     @Bean
-<<<<<<< HEAD
-    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
-        http
-            .csrf(csrf -> csrf.disable()) // Desabilita a proteção CSRF
-            .authorizeExchange(exchange -> exchange
-                .anyExchange().permitAll() // Permite todas as requisições
-            )
-            .cors(cors -> cors.configurationSource(corsConfigurationSource())); // Habilita CORS
-=======
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
->>>>>>> dev
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) {
