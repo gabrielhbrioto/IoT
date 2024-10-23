@@ -6,11 +6,9 @@ com/iot/controller/DatabaseController.class
 com/iot/controller/UsuarioController.class
 com/iot/service/SensorService.class
 com/iot/model/Sala.class
-com/iot/config/CorsConfig.class
 com/iot/App.class
 com/iot/config/SecurityConfig.class
 com/iot/service/CustomUserDetailsService.class
-com/iot/config/JwtAuthenticationConverter.class
 com/iot/service/SalaService.class
 com/iot/controller/InscricaoController.class
 com/iot/service/InscricaoService.class
@@ -30,4 +28,5 @@ com/iot/controller/MedidaController.class
 com/iot/repository/InscricaoRepository.class
 com/iot/controller/AuthenticationController.class
 com/iot/repository/MedidaRepository.class
+com/iot/dto/LoginRequest.class
 com/iot/config/DatabaseConfig.class

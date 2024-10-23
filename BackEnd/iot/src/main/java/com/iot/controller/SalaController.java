@@ -1,7 +1,11 @@
 package com.iot.controller;
 
 import com.iot.model.Sala;
+import com.iot.model.Sensor;
 import com.iot.service.SalaService;
+import com.iot.service.SensorService; // Corrigir importação
+import com.iot.service.UsuarioService;
+import com.iot.config.JwtUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -12,9 +16,15 @@ import reactor.core.publisher.Mono;
 public class SalaController {
 
     private final SalaService salaService;
+    private final SensorService sensorService; // Corrigir aqui
+    private final JwtUtil jwtUtil;
+    private final UsuarioService usuarioService;
 
-    public SalaController(SalaService salaService) {
+    public SalaController(SalaService salaService, SensorService sensorService, JwtUtil jwtUtil, UsuarioService usuarioService) { // Ajustar o construtor
         this.salaService = salaService;
+        this.sensorService = sensorService; // Ajustar aqui
+        this.jwtUtil = jwtUtil;
+        this.usuarioService = usuarioService;
     }
 
     @GetMapping
@@ -23,9 +33,39 @@ public class SalaController {
     }
 
     @PostMapping
-    public Mono<ResponseEntity<Sala>> createSala(@RequestBody Sala sala) {
-        return salaService.criarSala(sala)
-                .map(novaSala -> ResponseEntity.ok(novaSala));
+    public Mono<ResponseEntity<Sala>> createSala(@RequestBody Sala sala, @RequestHeader("Authorization") String authToken) {
+        // Remove o prefixo "Bearer " do token e extrai as claims
+        String token = authToken.replace("Bearer ", "");
+        //String email = jwtUtil.extractUsername(token);  // Extrai o email do token
+        Long userId = jwtUtil.extractUserId(token);     // Extrai o ID do usuário do token
+    
+        return usuarioService.buscarPorId(userId)
+            .flatMap(usuario -> {
+                sala.setCriador(usuario);  // Define o criador da sala
+                return salaService.criarSala(sala)
+                    .flatMap(novaSala -> {
+                        // Após a criação da sala, crie três sensores (presença, tensão e corrente)
+                        Sensor sensorPresenca = new Sensor();
+                        sensorPresenca.setSalaId(novaSala.getId()); // Certifique-se de que Sensor tem esse método
+                        sensorPresenca.setTipo("PRESENCA");
+    
+                        Sensor sensorTensao = new Sensor();
+                        sensorTensao.setSalaId(novaSala.getId()); // Certifique-se de que Sensor tem esse método
+                        sensorTensao.setTipo("TENSAO");
+    
+                        Sensor sensorCorrente = new Sensor();
+                        sensorCorrente.setSalaId(novaSala.getId()); // Certifique-se de que Sensor tem esse método
+                        sensorCorrente.setTipo("CORRENTE");
+    
+                        // Crie os três sensores em paralelo e, ao final, retorne a sala criada
+                        return Flux.concat(
+                                sensorService.criarSensor(sensorPresenca), // Usando sensorService
+                                sensorService.criarSensor(sensorTensao),   // Usando sensorService
+                                sensorService.criarSensor(sensorCorrente)  // Usando sensorService
+                            )
+                            .then(Mono.just(ResponseEntity.ok(novaSala)));  // Retorna a sala após criar os sensores
+                    });
+            });
     }
 
     @GetMapping("/{id}")
@@ -54,6 +94,4 @@ public class SalaController {
                 .then(Mono.just(ResponseEntity.noContent().build())) // Retorna um ResponseEntity<Void>
                 .onErrorReturn(ResponseEntity.notFound().build()); // Retorna um ResponseEntity<Void>
     }
-
-
 }

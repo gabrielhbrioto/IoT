@@ -41,7 +41,7 @@ public class SensorController {
         return sensorService.buscarSensorPorId(id)
                 .flatMap(existingSensor -> {
                     existingSensor.setTipo(sensor.getTipo());
-                    existingSensor.setSala(sensor.getSala());
+                    existingSensor.setSalaId(sensor.getSalaId());
                     return sensorService.criarSensor(existingSensor);
                 })
                 .map(updatedSensor -> ResponseEntity.ok(updatedSensor))
