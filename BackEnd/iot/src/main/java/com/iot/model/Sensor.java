@@ -3,7 +3,7 @@ package com.iot.model;
 public class Sensor {
 
     private Long id;
-    private Long salaId; // Certifique-se de ter este campo
+    private Long salaId; 
     private String tipo;
 
     // Construtor padrão
@@ -38,8 +38,8 @@ public class Sensor {
     }
 
     public void setTipo(String tipo) {
-        if (!tipo.equals("CORRENTE") && !tipo.equals("TENSAO")) {
-            throw new IllegalArgumentException("Tipo deve ser 'CORRENTE' ou 'TENSAO'");
+        if (!tipo.equals("CORRENTE") && !tipo.equals("TENSAO") && !tipo.equals("PRESENCA")) {
+            throw new IllegalArgumentException("Tipo deve ser 'CORRENTE', 'TENSAO' ou 'PRESENCA'");
         }
         this.tipo = tipo;
     }

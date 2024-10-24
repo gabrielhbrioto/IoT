@@ -36,32 +36,30 @@ public class SalaController {
     public Mono<ResponseEntity<Sala>> createSala(@RequestBody Sala sala, @RequestHeader("Authorization") String authToken) {
         // Remove o prefixo "Bearer " do token e extrai as claims
         String token = authToken.replace("Bearer ", "");
-        //String email = jwtUtil.extractUsername(token);  // Extrai o email do token
-        Long userId = jwtUtil.extractUserId(token);     // Extrai o ID do usuário do token
-    
+        Long userId = jwtUtil.extractUserId(token); // Extrai o ID do usuário do token
+
         return usuarioService.buscarPorId(userId)
             .flatMap(usuario -> {
-                sala.setCriador(usuario);  // Define o criador da sala
+                sala.setIdCriador(userId);  // Define apenas o ID do criador
                 return salaService.criarSala(sala)
                     .flatMap(novaSala -> {
                         // Após a criação da sala, crie três sensores (presença, tensão e corrente)
                         Sensor sensorPresenca = new Sensor();
-                        sensorPresenca.setSalaId(novaSala.getId()); // Certifique-se de que Sensor tem esse método
+                        sensorPresenca.setSalaId(novaSala.getId()); 
                         sensorPresenca.setTipo("PRESENCA");
-    
+
                         Sensor sensorTensao = new Sensor();
-                        sensorTensao.setSalaId(novaSala.getId()); // Certifique-se de que Sensor tem esse método
+                        sensorTensao.setSalaId(novaSala.getId()); 
                         sensorTensao.setTipo("TENSAO");
-    
+
                         Sensor sensorCorrente = new Sensor();
-                        sensorCorrente.setSalaId(novaSala.getId()); // Certifique-se de que Sensor tem esse método
+                        sensorCorrente.setSalaId(novaSala.getId()); 
                         sensorCorrente.setTipo("CORRENTE");
-    
-                        // Crie os três sensores em paralelo e, ao final, retorne a sala criada
+
                         return Flux.concat(
-                                sensorService.criarSensor(sensorPresenca), // Usando sensorService
-                                sensorService.criarSensor(sensorTensao),   // Usando sensorService
-                                sensorService.criarSensor(sensorCorrente)  // Usando sensorService
+                                sensorService.criarSensor(sensorPresenca),
+                                sensorService.criarSensor(sensorTensao),
+                                sensorService.criarSensor(sensorCorrente)
                             )
                             .then(Mono.just(ResponseEntity.ok(novaSala)));  // Retorna a sala após criar os sensores
                     });
@@ -81,7 +79,7 @@ public class SalaController {
         return salaService.buscarSalaPorId(id)
                 .flatMap(existingSala -> {
                     existingSala.setNome(sala.getNome());
-                    existingSala.setCriador(sala.getCriador());
+                    existingSala.setIdCriador(sala.getIdCriador());
                     return salaService.criarSala(existingSala);
                 })
                 .map(updatedSala -> ResponseEntity.ok(updatedSala))
