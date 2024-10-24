@@ -18,8 +18,7 @@ public class CustomUserDetailsService implements ReactiveUserDetailsService {
     public Mono<UserDetails> findByUsername(String email) {
         return usuarioRepository.findByEmail(email)
             .map(usuario -> {
-                // Não imprima a senha diretamente no log por questões de segurança
-                System.out.println("Usuário encontrado: " + usuario.getEmail());
+                // System.out.println("Usuário encontrado: " + usuario.getEmail());
                 return org.springframework.security.core.userdetails.User.builder()
                         .username(usuario.getEmail())
                         .password(usuario.getSenha()) // Senha já deve estar codificada

@@ -43,8 +43,12 @@ public class JwtUtil {
     }
 
     public String extractUsername(String token) {
+        if (token == null) {
+            return null;
+        }
         return extractAllClaims(token).getSubject();
     }
+    
 
     public Long extractUserId(String token) {
         Claims claims = extractAllClaims(token);
@@ -52,6 +56,7 @@ public class JwtUtil {
     }
 
     private Claims extractAllClaims(String token) {
+
         return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
                 .build()
