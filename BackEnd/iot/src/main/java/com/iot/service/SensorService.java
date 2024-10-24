@@ -18,7 +18,7 @@ public class SensorService {
     }
 
     public Flux<Sensor> listarSensoresPorSala(Long idSala) {
-        return sensorRepository.findBySalaId(idSala);
+        return sensorRepository.findByIdSala(idSala);
     }
 
     public Mono<Sensor> buscarSensorPorId(Long id) {

@@ -3,16 +3,16 @@ package com.iot.model;
 public class Sensor {
 
     private Long id;
-    private Long salaId; 
+    private Long idSala; 
     private String tipo;
 
     // Construtor padrão
     public Sensor() {}
 
     // Construtor com parâmetros
-    public Sensor(Long id, Long salaId, String tipo) {
+    public Sensor(Long id, Long idSala, String tipo) {
         this.id = id;
-        this.salaId = salaId;
+        this.idSala = idSala;
         setTipo(tipo); // Usa o setter para validar
     }
 
@@ -25,12 +25,12 @@ public class Sensor {
         this.id = id;
     }
 
-    public Long getSalaId() {
-        return salaId;
+    public Long getIdSala() {
+        return idSala;
     }
     
-    public void setSalaId(Long salaId) {
-        this.salaId = salaId;
+    public void setIdSala(Long idSala) {
+        this.idSala = idSala;
     }    
 
     public String getTipo() {
@@ -48,7 +48,7 @@ public class Sensor {
     public String toString() {
         return "Sensor{" +
                 "id=" + id +
-                ", salaId=" + salaId +
+                ", idSala=" + idSala +
                 ", tipo='" + tipo + '\'' +
                 '}';
     }

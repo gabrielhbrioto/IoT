@@ -1,6 +1,5 @@
 com/iot/service/UsuarioService.class
 com/iot/config/JwtUtil.class
-com/iot/controller/SensorController.class
 com/iot/repository/SensorRepository.class
 com/iot/controller/DatabaseController.class
 com/iot/controller/UsuarioController.class
@@ -23,7 +22,6 @@ com/iot/repository/SalaRepository.class
 com/iot/config/JwtConfig.class
 com/iot/model/Inscricao.class
 com/iot/config/JwtAuthenticationFilter.class
-com/iot/controller/SalaController.class
 com/iot/controller/MedidaController.class
 com/iot/repository/InscricaoRepository.class
 com/iot/controller/AuthenticationController.class

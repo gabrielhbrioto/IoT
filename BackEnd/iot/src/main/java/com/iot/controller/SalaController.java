@@ -45,15 +45,15 @@ public class SalaController {
                     .flatMap(novaSala -> {
                         // Após a criação da sala, crie três sensores (presença, tensão e corrente)
                         Sensor sensorPresenca = new Sensor();
-                        sensorPresenca.setSalaId(novaSala.getId()); 
+                        sensorPresenca.setIdSala(novaSala.getId()); 
                         sensorPresenca.setTipo("PRESENCA");
 
                         Sensor sensorTensao = new Sensor();
-                        sensorTensao.setSalaId(novaSala.getId()); 
+                        sensorTensao.setIdSala(novaSala.getId()); 
                         sensorTensao.setTipo("TENSAO");
 
                         Sensor sensorCorrente = new Sensor();
-                        sensorCorrente.setSalaId(novaSala.getId()); 
+                        sensorCorrente.setIdSala(novaSala.getId()); 
                         sensorCorrente.setTipo("CORRENTE");
 
                         return Flux.concat(
