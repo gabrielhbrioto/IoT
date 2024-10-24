@@ -25,6 +25,7 @@
 /home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/model/Medida.java
 /home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/model/Sala.java
 /home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/model/Sensor.java
+/home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/model/UserPrincipal.java
 /home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/model/Usuario.java
 /home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/repository/InscricaoRepository.java
 /home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/repository/MedidaRepository.java

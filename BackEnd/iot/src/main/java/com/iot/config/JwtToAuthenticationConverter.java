@@ -1,33 +1,39 @@
 package com.iot.config;
 
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import com.iot.model.UserPrincipal;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.core.convert.converter.Converter;
-import reactor.core.publisher.Mono;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
-import java.util.Collection;
-import java.util.stream.Collectors;
+import java.util.Collections;
 
 @Component
 public class JwtToAuthenticationConverter implements Converter<Jwt, Mono<AbstractAuthenticationToken>> {
 
-    @Override
-    public Mono<AbstractAuthenticationToken> convert(Jwt jwt) {
-        String username = jwt.getClaimAsString("sub"); // Use o campo adequado do JWT
-        Collection<SimpleGrantedAuthority> authorities = extractAuthorities(jwt);
+    private final JwtUtil jwtUtil;
 
-        // Cria o token de autenticação com o usuário e suas authorities
-        return Mono.just(new UsernamePasswordAuthenticationToken(username, null, authorities));
+    // Injeção de dependência do JwtUtil
+    public JwtToAuthenticationConverter(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
     }
 
-    private Collection<SimpleGrantedAuthority> extractAuthorities(Jwt jwt) {
-        // Extrai authorities do JWT, assumindo que estão no claim "roles" como uma lista
-        return jwt.getClaimAsStringList("roles")
-                  .stream()
-                  .map(SimpleGrantedAuthority::new)
-                  .collect(Collectors.toList());
+    @Override
+    public Mono<AbstractAuthenticationToken> convert(Jwt jwt) {
+        // Extraindo o token JWT como uma string
+        String token = jwt.getTokenValue();
+
+        // Usando JwtUtil para extrair as informações do token
+        Long userId = jwtUtil.extractUserId(token);
+        String email = jwtUtil.extractUsername(token);
+
+        // Criar uma lista vazia de authorities, já que você não está usando roles
+        return Mono.just(new UsernamePasswordAuthenticationToken(
+            new UserPrincipal(userId, email),  // Cria um principal personalizado
+            null,
+            Collections.emptyList()            // Lista vazia de authorities
+        ));
     }
 }
