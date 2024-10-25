@@ -32,6 +32,7 @@ function fetchInscricoesUsuario() {
   // Salva o botão add-card
   const addCardButton = document.querySelector('.add-card');
   const criarSalaPopupDiv = document.querySelector('.popup');
+  const responseModalDiv = document.querySelector('.modal');
 
   // Limpa o container antes de adicionar novos cards
   salaContainer.innerHTML = '';
@@ -56,6 +57,7 @@ function fetchInscricoesUsuario() {
     // Adiciona o botão add-card de volta ao container
     salaContainer.appendChild(addCardButton);
     salaContainer.appendChild(criarSalaPopupDiv);
+    salaContainer.appendChild(responseModalDiv);
 
   })
   .catch(error => {
@@ -105,7 +107,7 @@ function criarCardSala(inscricao) {
 // Função para carregar as inscrições e exibir as salas
 function carregarInscricoes() {
   const token = sessionStorage.getItem('token');
-  
+
   fetch('http://localhost:8080/inscricoes', {
     method: 'POST',
     headers: {
@@ -151,18 +153,11 @@ document.querySelector('.criar-sala-content .btn').addEventListener('click', () 
     return response.json();
   })
   .then(data => {
-    console.log(data);
     document.getElementById('modalId').innerText = data.id;
     document.getElementById('modalNome').innerText = data.nome;
     document.getElementById('modalIdCriador').innerText = data.idCriador;
     document.getElementById('responseModal').style.display = 'block';
-    
-    // Recarregar as inscrições do usuário para exibir a nova sala
-    fetchInscricoesUsuario();
-    window.location.reload();
-    console.log("aiaiaiaia");
-
-    
+        
   })
   .catch(error => {
     console.error('Error:', error);
@@ -201,4 +196,6 @@ document.querySelector('.inscrever-sala-content .btn').addEventListener('click',
 // Fecha o modal ao clicar no botão "Ok" ou no "X"
 document.getElementById('closeModal').addEventListener('click', () => {
   document.getElementById('responseModal').style.display = 'none';
+  fetchInscricoesUsuario();
+  window.location.reload();
 });
