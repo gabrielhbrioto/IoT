@@ -18,13 +18,14 @@ public class CustomUserDetailsService implements ReactiveUserDetailsService {
     public Mono<UserDetails> findByUsername(String email) {
         return usuarioRepository.findByEmail(email)
             .map(usuario -> {
-                // Aqui você cria um UserDetails a partir do seu objeto Usuario
+                // System.out.println("Usuário encontrado: " + usuario.getEmail());
                 return org.springframework.security.core.userdetails.User.builder()
                         .username(usuario.getEmail())
-                        .password(usuario.getSenha())
+                        .password(usuario.getSenha()) // Senha já deve estar codificada
                         .roles("USER") // ou outros papéis conforme necessário
                         .build();
             })
             .switchIfEmpty(Mono.error(new UsernameNotFoundException("Usuário não encontrado com o email: " + email)));
     }
+
 }

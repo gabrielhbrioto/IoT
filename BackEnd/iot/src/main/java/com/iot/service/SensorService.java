@@ -17,8 +17,8 @@ public class SensorService {
         return sensorRepository.save(sensor);
     }
 
-    public Flux<Sensor> listarSensoresPorSala(Long salaId) {
-        return sensorRepository.findBySalaId(salaId);
+    public Flux<Sensor> listarSensoresPorSala(Long idSala) {
+        return sensorRepository.findByIdSala(idSala);
     }
 
     public Mono<Sensor> buscarSensorPorId(Long id) {

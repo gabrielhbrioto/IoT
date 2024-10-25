@@ -11,9 +11,9 @@ public class Sala {
 
     private String nome;
 
-    private Usuario criador;
+    private Long idCriador; // Mapeando apenas o ID do criador
 
-    // Getter e Setter para o ID
+    // Getters e Setters
     public Long getId() {
         return id;
     }
@@ -22,7 +22,6 @@ public class Sala {
         this.id = id;
     }
 
-    // Getter e Setter para o Nome
     public String getNome() {
         return nome;
     }
@@ -31,12 +30,11 @@ public class Sala {
         this.nome = nome;
     }
 
-    // Getter e Setter para o Criador (Usuário)
-    public Usuario getCriador() {
-        return criador;
+    public Long getIdCriador() {
+        return idCriador;
     }
 
-    public void setCriador(Usuario criador) {
-        this.criador = criador;
+    public void setIdCriador(Long idCriador) {
+        this.idCriador = idCriador;
     }
 }

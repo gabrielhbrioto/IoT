@@ -20,12 +20,12 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public Mono<String> login(@RequestBody LoginRequest loginRequest) {
-        System.out.printf("Tentativa de login com o email: %s\n", loginRequest.getEmail());
         return usuarioService.buscarPorEmailESenha(loginRequest.getEmail(), loginRequest.getSenha())
             .flatMap(usuario -> {
-                String token = jwtUtil.generateToken(usuario.getEmail());
+                String token = jwtUtil.generateToken(usuario.getEmail(), usuario.getId()); 
                 return Mono.just(token);
             })
             .switchIfEmpty(Mono.error(new RuntimeException("Credenciais inválidas")));
     }
+
 }

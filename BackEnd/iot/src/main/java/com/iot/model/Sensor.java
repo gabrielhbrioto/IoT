@@ -1,21 +1,22 @@
 package com.iot.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Table;
-import org.springframework.data.relational.core.mapping.MappedCollection;
-
-@Table("SENSOR")
 public class Sensor {
 
-    @Id
     private Long id;
-
-    @MappedCollection
-    private Sala sala;
-
+    private Long idSala; 
     private String tipo;
 
-    // Getter e Setter para o ID
+    // Construtor padrão
+    public Sensor() {}
+
+    // Construtor com parâmetros
+    public Sensor(Long id, Long idSala, String tipo) {
+        this.id = id;
+        this.idSala = idSala;
+        setTipo(tipo); // Usa o setter para validar
+    }
+
+    // Getters e Setters
     public Long getId() {
         return id;
     }
@@ -24,21 +25,31 @@ public class Sensor {
         this.id = id;
     }
 
-    // Getter e Setter para a Sala
-    public Sala getSala() {
-        return sala;
+    public Long getIdSala() {
+        return idSala;
     }
+    
+    public void setIdSala(Long idSala) {
+        this.idSala = idSala;
+    }    
 
-    public void setSala(Sala sala) {
-        this.sala = sala;
-    }
-
-    // Getter e Setter para o Tipo
     public String getTipo() {
         return tipo;
     }
 
     public void setTipo(String tipo) {
+        if (!tipo.equals("CORRENTE") && !tipo.equals("TENSAO") && !tipo.equals("PRESENCA")) {
+            throw new IllegalArgumentException("Tipo deve ser 'CORRENTE', 'TENSAO' ou 'PRESENCA'");
+        }
         this.tipo = tipo;
+    }
+
+    @Override
+    public String toString() {
+        return "Sensor{" +
+                "id=" + id +
+                ", idSala=" + idSala +
+                ", tipo='" + tipo + '\'' +
+                '}';
     }
 }
