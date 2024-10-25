@@ -1,11 +1,6 @@
 /home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/App.java
-/home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/config/AuthConfig.java
-/home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/config/CorsConfig.java
-/home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/config/CustomJwtAuthentication.java
-/home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/config/CustomJwtAuthenticationConverter.java
 /home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/config/DatabaseConfig.java
 /home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/config/JwtAuthenticationFilter.java
-/home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/config/JwtAuthenticationManager.java
 /home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/config/JwtConfig.java
 /home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/config/JwtReactiveAuthenticationManager.java
 /home/gabriel/IoT/BackEnd/iot/src/main/java/com/iot/config/JwtToAuthenticationConverter.java

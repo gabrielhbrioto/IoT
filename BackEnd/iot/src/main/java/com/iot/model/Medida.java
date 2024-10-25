@@ -10,7 +10,7 @@ public class Medida {
     @Id
     private Long id;
 
-    private Sensor sensor;
+    private Long idSensor; // Alterado para referenciar o ID do sensor
 
     private Integer valor;
 
@@ -25,13 +25,13 @@ public class Medida {
         this.id = id;
     }
 
-    // Getter e Setter para o Sensor
-    public Sensor getSensor() {
-        return sensor;
+    // Getter e Setter para o ID do Sensor
+    public Long getIdSensor() {
+        return idSensor;
     }
 
-    public void setSensor(Sensor sensor) {
-        this.sensor = sensor;
+    public void setIdSensor(Long idSensor) {
+        this.idSensor = idSensor;
     }
 
     // Getter e Setter para o Valor

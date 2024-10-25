@@ -14,14 +14,18 @@ public class InscricaoService {
     private InscricaoRepository inscricaoRepository;
 
     public Flux<Inscricao> getAllInscricoes() {
-        return inscricaoRepository.findAll(); // Retorna um Flux de inscrições
+        return inscricaoRepository.findAll();
     }
 
     public Mono<Inscricao> createInscricao(Inscricao inscricao) {
-        return inscricaoRepository.save(inscricao); // Método para salvar uma nova inscrição
+        return inscricaoRepository.save(inscricao);
     }
 
     public Mono<Void> deleteInscricao(Long id) {
-        return inscricaoRepository.deleteById(id); // Método para deletar a inscrição pelo ID
+        return inscricaoRepository.deleteById(id);
+    }
+
+    public Flux<Inscricao> getInscricoesByUsuarioId(Long idUsuario) {
+        return inscricaoRepository.findByIdUsuario(idUsuario);
     }
 }

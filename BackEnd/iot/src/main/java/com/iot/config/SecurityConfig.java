@@ -33,7 +33,7 @@ public class SecurityConfig {
                 return configuration;
             }))
             .authorizeExchange(exchanges -> exchanges
-                .pathMatchers("/auth/login", "/auth/register").permitAll()
+                .pathMatchers("/auth/login", "/usuarios").permitAll()
                 .anyExchange().authenticated()
             )
             .addFilterAt(jwtAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION)
