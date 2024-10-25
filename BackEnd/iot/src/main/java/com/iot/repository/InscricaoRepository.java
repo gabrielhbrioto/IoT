@@ -1,4 +1,5 @@
 package com.iot.repository;
+
 import com.iot.model.Inscricao;
 import org.springframework.data.r2dbc.repository.R2dbcRepository;
 

@@ -9,9 +9,9 @@ public class Inscricao {
     @Id
     private Long id;
 
-    private Sala sala;
+    private Long idSala; // Armazena apenas o ID da Sala
 
-    private Usuario usuario;
+    private Long idUsuario; // Armazena apenas o ID do Usuário
 
     // Getter e Setter para o ID
     public Long getId() {
@@ -22,21 +22,21 @@ public class Inscricao {
         this.id = id;
     }
 
-    // Getter e Setter para a Sala
-    public Sala getSala() {
-        return sala;
+    // Getter e Setter para o ID da Sala
+    public Long getIdSala() {
+        return idSala;
     }
 
-    public void setSala(Sala sala) {
-        this.sala = sala;
+    public void setIdSala(Long idSala) {
+        this.idSala = idSala;
     }
 
-    // Getter e Setter para o Usuário
-    public Usuario getUsuario() {
-        return usuario;
+    // Getter e Setter para o ID do Usuário
+    public Long getIdUsuario() {
+        return idUsuario;
     }
 
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
+    public void setIdUsuario(Long idUsuario) {
+        this.idUsuario = idUsuario;
     }
 }

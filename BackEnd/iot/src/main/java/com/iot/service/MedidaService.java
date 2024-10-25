@@ -19,12 +19,12 @@ public class MedidaService {
         return medidaRepository.save(medida);
     }
 
-    public Flux<Medida> listarMedidasPorSensor(Long sensorId) {
-        return medidaRepository.findBySensorId(sensorId);
+    public Flux<Medida> listarMedidasPorSensor(Long idSensor) {
+        return medidaRepository.findByIdSensor(idSensor);
     }
 
-    public Flux<Medida> listarMedidasPorPeriodo(Long sensorId, ZonedDateTime inicio, ZonedDateTime fim) {
-        return medidaRepository.findBySensorIdAndHorarioBetween(sensorId, inicio, fim);
+    public Flux<Medida> listarMedidasPorPeriodo(Long idSensor, ZonedDateTime inicio, ZonedDateTime fim) {
+        return medidaRepository.findByIdSensorAndHorarioBetween(idSensor, inicio, fim);
     }
 
     public Flux<Medida> getAllMedidas() {
