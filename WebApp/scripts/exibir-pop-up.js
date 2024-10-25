@@ -29,6 +29,13 @@ function changeContent(contentId) {
 function fetchInscricoesUsuario() {
   const token = sessionStorage.getItem('token'); // Recupera o token JWT
 
+  // Salva o botão add-card
+  const addCardButton = document.querySelector('.add-card');
+  const criarSalaPopupDiv = document.querySelector('.popup');
+
+  // Limpa o container antes de adicionar novos cards
+  salaContainer.innerHTML = '';
+
   fetch('http://localhost:8080/inscricoes/usuario', {
     method: 'GET',
     headers: {
@@ -45,11 +52,17 @@ function fetchInscricoesUsuario() {
     data.forEach(inscricao => {
       criarCardSala(inscricao);
     });
+
+    // Adiciona o botão add-card de volta ao container
+    salaContainer.appendChild(addCardButton);
+    salaContainer.appendChild(criarSalaPopupDiv);
+
   })
   .catch(error => {
     console.error('Error ao buscar inscrições:', error); // Lida com erros
   });
 }
+
 
 // Função para criar um card de sala
 function criarCardSala(inscricao) {
@@ -75,8 +88,9 @@ function criarCardSala(inscricao) {
     // Cria o conteúdo do card com o nome da sala obtido
     card.innerHTML = `
       <h2 class="card-title">${sala.nome}</h2>
-      <p>ID: ${sala.id}</p>
-      <p>Status: Livre</p>
+      <p><b>ID:</b> ${sala.id}</p>
+      <p><b>Status:</b> Livre</p>
+      <p><b>ID do Criador:</b> ${sala.idCriador}</p>
       <a href="sala.html">Ver mais</a>
     `;
 
@@ -88,11 +102,18 @@ function criarCardSala(inscricao) {
   });
 }
 
-
 // Função para carregar as inscrições e exibir as salas
 function carregarInscricoes() {
-  fetch('/inscricoes')
-    .then(response => response.json())
+  const token = sessionStorage.getItem('token');
+  
+  fetch('http://localhost:8080/inscricoes', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ idSala: idSala }),
+  }).then(response => response.json())
     .then(inscricoes => {
       inscricoes.forEach(inscricao => {
         criarCardSala(inscricao);
@@ -130,10 +151,18 @@ document.querySelector('.criar-sala-content .btn').addEventListener('click', () 
     return response.json();
   })
   .then(data => {
+    console.log(data);
     document.getElementById('modalId').innerText = data.id;
     document.getElementById('modalNome').innerText = data.nome;
     document.getElementById('modalIdCriador').innerText = data.idCriador;
     document.getElementById('responseModal').style.display = 'block';
+    
+    // Recarregar as inscrições do usuário para exibir a nova sala
+    fetchInscricoesUsuario();
+    window.location.reload();
+    console.log("aiaiaiaia");
+
+    
   })
   .catch(error => {
     console.error('Error:', error);
