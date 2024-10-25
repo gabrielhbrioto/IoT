@@ -40,3 +40,4 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
         alert('Erro ao realizar login. Por favor, tente novamente.');
     });
 });
+

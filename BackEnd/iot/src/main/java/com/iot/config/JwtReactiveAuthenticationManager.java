@@ -11,6 +11,10 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import com.iot.config.JwtUtil;
 
+//apagar:
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -19,6 +23,8 @@ public class JwtReactiveAuthenticationManager implements ReactiveAuthenticationM
 
     private final ReactiveJwtDecoder jwtDecoder; // Mantido ReactiveJwtDecoder
     private final JwtUtil jwtUtil;
+    //apagar
+    private static final Logger logger = LoggerFactory.getLogger(JwtUtil.class);
 
     public JwtReactiveAuthenticationManager(ReactiveJwtDecoder jwtDecoder, JwtUtil jwtUtil) {
         this.jwtDecoder = jwtDecoder;
@@ -30,6 +36,8 @@ public class JwtReactiveAuthenticationManager implements ReactiveAuthenticationM
 
         Jwt jwt = (Jwt) authentication.getCredentials();
         String token = jwt.getTokenValue();  // Obtenha o valor do token como String
+
+        logger.debug("Token: {}", token);
 
         if (token == null) {
             return Mono.empty();

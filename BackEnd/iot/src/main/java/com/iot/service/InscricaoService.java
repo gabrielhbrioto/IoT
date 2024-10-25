@@ -18,8 +18,9 @@ public class InscricaoService {
     }
 
     public Mono<Inscricao> createInscricao(Inscricao inscricao) {
-        return inscricaoRepository.save(inscricao); // Método para salvar uma nova inscrição
+        return inscricaoRepository.save(inscricao); // Certifique-se de que o repositório está salvando todos os campos corretamente
     }
+   
 
     public Mono<Void> deleteInscricao(Long id) {
         return inscricaoRepository.deleteById(id); // Método para deletar a inscrição pelo ID
