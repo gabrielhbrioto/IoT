@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import java.util.List;
 
 @Configuration
 public class SecurityConfig {
@@ -22,16 +24,24 @@ public class SecurityConfig {
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         http
             .csrf(ServerHttpSecurity.CsrfSpec::disable)
+            .cors(cors -> cors.configurationSource(request -> {
+                CorsConfiguration configuration = new CorsConfiguration();
+                configuration.setAllowedOrigins(List.of("http://127.0.0.1:5500")); // Ou "*" para todas as origens
+                configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                configuration.setAllowedHeaders(List.of("*"));
+                configuration.setAllowCredentials(true);
+                return configuration;
+            }))
             .authorizeExchange(exchanges -> exchanges
                 .pathMatchers("/auth/login", "/auth/register").permitAll()
                 .anyExchange().authenticated()
             )
-            // Adicionando o filtro de autenticação JWT antes de outros filtros
             .addFilterAt(jwtAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION)
             .oauth2ResourceServer(oauth2 -> oauth2
-                .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtToAuthenticationConverter))  // Corrigido: Usando a instância injetada
+                .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtToAuthenticationConverter))
             );
 
         return http.build();
     }
+
 }

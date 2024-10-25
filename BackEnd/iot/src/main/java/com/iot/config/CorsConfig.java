@@ -25,8 +25,9 @@
 
 //     @Override
 //     public void addCorsMappings(CorsRegistry registry) {
+//         System.out.println("Configurando CORS...");
 //         registry.addMapping("/**")
-//                 .allowedOrigins("http://127.0.0.1:5500") // Especifique a origem exata
+//                 .allowedOrigins("*") // Especifique a origem exata
 //                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
 //                 .allowedHeaders("*")  // Permite todos os cabeçalhos
 //                 .allowCredentials(true); // Ajuste conforme necessário
