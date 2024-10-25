@@ -1,9 +1,11 @@
 package com.iot.controller;
 
+import com.iot.model.Inscricao;
 import com.iot.model.Sala;
 import com.iot.model.Sensor;
 import com.iot.service.SalaService;
-import com.iot.service.SensorService; // Corrigir importação
+import com.iot.service.SensorService; 
+import com.iot.service.InscricaoService; 
 import com.iot.service.UsuarioService;
 import com.iot.config.JwtUtil;
 import org.springframework.http.ResponseEntity;
@@ -16,15 +18,17 @@ import reactor.core.publisher.Mono;
 public class SalaController {
 
     private final SalaService salaService;
-    private final SensorService sensorService; // Corrigir aqui
+    private final SensorService sensorService; 
+    private final InscricaoService inscricaoService; 
     private final JwtUtil jwtUtil;
     private final UsuarioService usuarioService;
 
-    public SalaController(SalaService salaService, SensorService sensorService, JwtUtil jwtUtil, UsuarioService usuarioService) { // Ajustar o construtor
+    public SalaController(SalaService salaService, SensorService sensorService, JwtUtil jwtUtil, UsuarioService usuarioService, InscricaoService inscricaoService) { // Ajustar o construtor
         this.salaService = salaService;
         this.sensorService = sensorService; // Ajustar aqui
         this.jwtUtil = jwtUtil;
         this.usuarioService = usuarioService;
+        this.inscricaoService = inscricaoService;
     }
 
     @GetMapping
@@ -56,10 +60,15 @@ public class SalaController {
                         sensorCorrente.setIdSala(novaSala.getId()); 
                         sensorCorrente.setTipo("CORRENTE");
 
+                        Inscricao inscricao = new Inscricao();
+                        inscricao.setIdSala(novaSala.getId());
+                        inscricao.setIdUsuario(userId);
+
                         return Flux.concat(
                                 sensorService.criarSensor(sensorPresenca),
                                 sensorService.criarSensor(sensorTensao),
-                                sensorService.criarSensor(sensorCorrente)
+                                sensorService.criarSensor(sensorCorrente),
+                                inscricaoService.createInscricao(inscricao)
                             )
                             .then(Mono.just(ResponseEntity.ok(novaSala)));  // Retorna a sala após criar os sensores
                     });
