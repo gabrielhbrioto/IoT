@@ -1,43 +1,55 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="css/sala.css" media="screen" />
-    <title>Sala 1 - Bloco 5</title>
+  <title>Criar Sala</title>
+  <link rel="stylesheet" href="css/listagem-salas.css">
 </head>
 <body>
+  <div class="container" id="salaContainer">
+    <!-- Cards de salas serão inseridos aqui dinamicamente -->
 
-<h2>Sala 1 - Bloco 5</h2>
+    <div class="add-card">
+      <button id="openPopupBtn">
+        <img src="./img/simb_mais.png" alt="Addition Symbol">
+      </button>  
+    </div>
 
-<label for="id">ID: 1</label>
-<label for="status">Status: Ocupada</label>
-<label for="criador">Criador: Gabriel Henrique Brioto</label>
+    <!-- Estrutura do Modal -->
+    <div id="responseModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h2>Detalhes da Sala</h2>
+        <p><b>ID:</b> <span id="modalId"></span></p>
+        <p><b>Nome da Sala:</b> <span id="modalNome"></span></p>
+        <p><b>ID do Criador:</b> <span id="modalIdCriador"></span></p>
+        <button id="closeModal" class="btn">Ok</button>
+      </div>
+    </div>
 
-<h3>Histórico de Consumo:</h3>
-<label>
-    <input type="radio" name="consumo" value="24 horas">
-    24 Horas
-</label>
-<label>
-    <input type="radio" name="consumo" value="1 semana">
-    1 Semana
-</label>
-<label>
-    <input type="radio" name="consumo" value="1 mês">
-    1 Mês
-</label>
-<label for="outro">
-    <input type="radio" name="consumo" value="outro">
-    Outro: 
-    <input type="text" id="outro" name="outro">
-</label>
-<select id="periodo" name="periodo">
-    <option value="hora">Hora</option>
-    <option value="dia">Dia</option>
-    <option value="semana">Semana</option>
-    <option value="mes">Mês</option>
-</select>
+    <div id="criarSalaPopup" class="popup">
+      <span class="close-btn" onclick="closePopup()">&times;</span>
+      <h2>Criar Sala</h2>
+      <div class="radio-group">
+        <input type="radio" id="criarSalaRadio" name="salaAction" checked onchange="changeContent('criar-sala-content')">
+        <label for="criarSalaRadio">Criar Sala</label>
+      </div>
+      <div class="radio-group">
+        <input type="radio" id="inscreverSalaRadio" name="salaAction" onchange="changeContent('inscrever-sala-content')">
+        <label for="inscreverSalaRadio">Inscrever-se em uma Sala</label>
+      </div>
+      <div class="criar-sala-content show">
+        <label for="nomeSala">Insira o Nome da Sala:</label>
+        <input type="text" id="nomeSala" name="nomeSala">
+        <button type="submit" class="btn">Criar Sala</button>
+      </div>
+      <div class="inscrever-sala-content">
+        <label for="idSala">Insira o ID da Sala:</label>
+        <input type="text" id="idSala" name="idSala">
+        <button type="submit" class="btn">Inscrever-se</button>
+      </div>
+    </div>
+  </div>
 
+  <script src="scripts/exibir-pop-up.js"></script>
 </body>
 </html>

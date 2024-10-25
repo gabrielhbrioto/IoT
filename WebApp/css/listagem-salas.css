@@ -4,21 +4,48 @@ body {
 }
 
 .container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Até 5 colunas */
+  gap: 60px; /* Espaçamento entre os cards */
+  justify-items: center; /* Centraliza os cards */
+  padding: 20px;
+  max-width: 1200px; /* Largura máxima do container */
+  margin: auto; /* Centraliza o container na página */
+}
+/*
+.card {
+  width: 200px;
+  height: 200px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: left;
+}
+
+.container {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
 }
-
+  */
 .card {
   background-color: #ffffff;
   border-radius: 10px;
   padding: 20px;
   margin: 10px;
-  width: 200px;
+  width: 210px;
   height: 200px;
   text-align: left;
 }
+
+.card-title {
+  white-space: nowrap; 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+  width: 100%;
+}
+
 
 .popup {
   position: fixed;
@@ -82,7 +109,7 @@ body {
   padding: 20px;
   margin: 10px;
   height: 200px;
-  width: 200px;
+  width: 210px;
   display: flex;             
   justify-content: center;   
   align-items: center;       
