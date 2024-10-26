@@ -3,6 +3,18 @@ body {
   background-color: #f4f4f4;
 }
 
+#logoutBtn {
+  position: absolute; /* Coloca o botão no canto superior direito */
+  top: 20px; /* Ajusta a posição vertical */
+  right: 20px; /* Ajusta a posição horizontal */
+  background-color: #2196F3;
+  color: #fff;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
 .container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Até 5 colunas */
@@ -11,6 +23,7 @@ body {
   padding: 20px;
   max-width: 1200px; /* Largura máxima do container */
   margin: auto; /* Centraliza o container na página */
+  margin-top: 5%;
 }
 /*
 .card {

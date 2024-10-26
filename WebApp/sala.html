@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="css/sala.css" media="screen" />
-    <title>Sala 1 - Bloco 5</title>
+    <title>Detalhes da Sala</title>
 </head>
 <body>
 
-<h2>Sala 1 - Bloco 5</h2>
+<h2 id="salaTitulo">Sala - Bloco</h2>
 
-<label for="id">ID: 1</label>
-<label for="status">Status: Livre</label>
-<label for="criador">Criador: Gabriel Henrique Brioto</label>
+<label for="id" id="salaId">ID:</label>
+<!--<label for="status" id="salaStatus">Status:</label>-->
+<label for="criador" id="salaCriador">Criador:</label>
 
 <h3>Histórico de Consumo:</h3>
 <label>
@@ -39,5 +39,6 @@
     <option value="mes">Mês</option>
 </select>
 
+<script src="scripts/sala.js"></script>
 </body>
 </html>

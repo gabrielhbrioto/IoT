@@ -119,10 +119,11 @@ function criarCardSala(inscricao) {
     card.innerHTML = `
       <h2 class="card-title">${sala.nome}</h2>
       <p><b>ID:</b> ${sala.id}</p>
-      <p><b>Status:</b> Livre</p>
+      <!--<p><b>Status:</b> Livre</p>-->
       <p><b>ID do Criador:</b> ${sala.idCriador}</p>
-      <a href="sala.html">Ver mais</a>
+      <a href="sala.html?id=${sala.id}">Ver mais</a>
     `;
+
 
     // Adiciona o card ao container
     salaContainer.insertBefore(card, document.querySelector('.add-card'));
@@ -210,5 +211,7 @@ function inscreverSala() {
   });
 }
 
-
-
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  sessionStorage.clear(); // Limpa todo o conteúdo do sessionStorage
+  window.location.href = 'http://127.0.0.1:5500/login.html'; // Redireciona para a página de login
+});
