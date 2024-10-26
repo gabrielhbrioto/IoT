@@ -8,6 +8,10 @@ import com.iot.service.SensorService;
 import com.iot.service.InscricaoService; 
 import com.iot.service.UsuarioService;
 import com.iot.config.JwtUtil;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -37,40 +41,49 @@ public class SalaController {
     }
 
     @PostMapping
-    public Mono<ResponseEntity<Sala>> createSala(@RequestBody Sala sala, @RequestHeader("Authorization") String authToken) {
-        // Remove o prefixo "Bearer " do token e extrai as claims
+    public Mono<ResponseEntity<Map<String, Object>>> createSala(@RequestBody Sala sala, @RequestHeader("Authorization") String authToken) {
         String token = authToken.replace("Bearer ", "");
         Long userId = jwtUtil.extractUserId(token); // Extrai o ID do usuário do token
-
+    
         return usuarioService.buscarPorId(userId)
             .flatMap(usuario -> {
                 sala.setIdCriador(userId);  // Define apenas o ID do criador
                 return salaService.criarSala(sala)
                     .flatMap(novaSala -> {
-                        // Após a criação da sala, crie três sensores (presença, tensão e corrente)
+                        // Criação dos sensores
                         Sensor sensorPresenca = new Sensor();
-                        sensorPresenca.setIdSala(novaSala.getId()); 
+                        sensorPresenca.setIdSala(novaSala.getId());
                         sensorPresenca.setTipo("PRESENCA");
-
+                    
                         Sensor sensorTensao = new Sensor();
-                        sensorTensao.setIdSala(novaSala.getId()); 
+                        sensorTensao.setIdSala(novaSala.getId());
                         sensorTensao.setTipo("TENSAO");
-
+                    
                         Sensor sensorCorrente = new Sensor();
-                        sensorCorrente.setIdSala(novaSala.getId()); 
+                        sensorCorrente.setIdSala(novaSala.getId());
                         sensorCorrente.setTipo("CORRENTE");
-
+                    
                         Inscricao inscricao = new Inscricao();
                         inscricao.setIdSala(novaSala.getId());
                         inscricao.setIdUsuario(userId);
-
+                    
                         return Flux.concat(
                                 sensorService.criarSensor(sensorPresenca),
                                 sensorService.criarSensor(sensorTensao),
-                                sensorService.criarSensor(sensorCorrente),
-                                inscricaoService.createInscricao(inscricao)
+                                sensorService.criarSensor(sensorCorrente)
                             )
-                            .then(Mono.just(ResponseEntity.ok(novaSala)));  // Retorna a sala após criar os sensores
+                            .collectList() // Coleta todos os sensores criados em uma lista
+                            .flatMap(sensoresCriados -> 
+                                inscricaoService.createInscricao(inscricao)
+                                    .map(inscricaoCriada -> {
+                                        // Prepara a resposta com a sala, os sensores criados e a inscrição separada
+                                        Map<String, Object> response = new HashMap<>();
+                                        response.put("sala", novaSala);
+                                        response.put("sensores", sensoresCriados);
+                                        response.put("inscricao", inscricaoCriada);
+                                        return ResponseEntity.ok(response); // Retorna a sala, sensores e inscrição
+                                    })
+                            );
                     });
             });
     }

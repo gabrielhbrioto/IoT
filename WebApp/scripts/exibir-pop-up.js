@@ -4,6 +4,35 @@ const criarSalaContent = document.querySelector('.criar-sala-content');
 const inscreverSalaContent = document.querySelector('.inscrever-sala-content');
 const salaContainer = document.getElementById('salaContainer');
 
+document.addEventListener('DOMContentLoaded', () => {
+  // Adicione o event listener após a garantia de que o DOM está carregado
+  document.querySelector('.inscrever-sala-content .btn')?.addEventListener('click', inscreverSala);
+  document.querySelector('.criar-sala-content .btn')?.addEventListener('click', criarSala);
+
+  // Fecha o modal ao clicar no botão "Ok" ou no "X"
+  document.getElementById('closeModal')?.addEventListener('click', closeResponseModal);
+  document.getElementById('closeBtn').addEventListener('click', showResponseModal); // Alterar para showResponseModal
+});
+
+// Mostra o modal de resposta e recarrega a página
+function showResponseModal() {
+  console.log("aaa");
+  document.getElementById('responseModal').style.display = 'none';
+  //fetchInscricoesUsuario();
+  window.location.reload(); // Recarrega a página
+}
+
+// Função para fechar o modal de resposta
+function closeResponseModal() {
+  document.getElementById('responseModal').style.display = 'none';
+}
+
+// Evento para fechar o modal ao clicar no botão "Ok"
+document.getElementById('closeBtn').addEventListener('click', closeResponseModal);
+
+// Evento para fechar o modal ao clicar no "X"
+document.querySelector('.modal .close-btn').addEventListener('click', closeResponseModal);
+
 // Exibe o popup ao clicar no botão de abrir
 openPopupBtn.addEventListener('click', () => {
   criarSalaPopup.style.display = 'block';
@@ -28,7 +57,6 @@ function changeContent(contentId) {
 // Função para buscar e exibir as inscrições do usuário
 function fetchInscricoesUsuario() {
   const token = sessionStorage.getItem('token'); // Recupera o token JWT
-
   // Salva o botão add-card
   const addCardButton = document.querySelector('.add-card');
   const criarSalaPopupDiv = document.querySelector('.popup');
@@ -104,36 +132,11 @@ function criarCardSala(inscricao) {
   });
 }
 
-// Função para carregar as inscrições e exibir as salas
-function carregarInscricoes() {
-  const token = sessionStorage.getItem('token');
-
-  fetch('http://localhost:8080/inscricoes', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ idSala: idSala }),
-  }).then(response => response.json())
-    .then(inscricoes => {
-      inscricoes.forEach(inscricao => {
-        criarCardSala(inscricao);
-      });
-    })
-    .catch(error => {
-      console.error('Erro ao carregar inscrições:', error);
-    });
-}
-
-// Inicializa o carregamento de inscrições
-document.addEventListener('DOMContentLoaded', carregarInscricoes);
-
 // Carrega as inscrições do usuário ao abrir a página
 window.addEventListener('load', fetchInscricoesUsuario);
 
 // Configurações para o modal de criação e inscrição de sala
-document.querySelector('.criar-sala-content .btn').addEventListener('click', () => {
+function criarSala() {
   const nomeSala = document.getElementById('nomeSala').value;
   const token = sessionStorage.getItem('token');
 
@@ -153,19 +156,30 @@ document.querySelector('.criar-sala-content .btn').addEventListener('click', () 
     return response.json();
   })
   .then(data => {
-    document.getElementById('modalId').innerText = data.id;
-    document.getElementById('modalNome').innerText = data.nome;
-    document.getElementById('modalIdCriador').innerText = data.idCriador;
+
+    // Exibe o modal com os detalhes da sala
+    document.getElementById('modalId').innerText = data.sala.id;
+    document.getElementById('modalNome').innerText = data.sala.nome;
+    document.getElementById('modalIdCriador').innerText = data.sala.idCriador;
+
+    // Itera sobre os sensores e exibe o tipo e o ID de cada um
+    const sensoresInfo = data.sensores.map(sensor => {
+        return `<b>ID Sensor de ${sensor.tipo.charAt(0).toUpperCase() + sensor.tipo.slice(1).toLowerCase()}:</b> ${sensor.id}`;
+    }).join('<br>'); // Junta as informações em linhas separadas
+
+    // Atualiza o elemento do modal com as informações dos sensores
+    document.getElementById('modalSensorInfo').innerHTML = sensoresInfo;
+
+    // Mostra o modal
     document.getElementById('responseModal').style.display = 'block';
-        
   })
   .catch(error => {
     console.error('Error:', error);
   });
-});
+}
 
 // Configuração para o botão de inscrição
-document.querySelector('.inscrever-sala-content .btn').addEventListener('click', () => {
+function inscreverSala() {
   const idSala = document.getElementById('idSala').value;
   const token = sessionStorage.getItem('token');
 
@@ -181,21 +195,20 @@ document.querySelector('.inscrever-sala-content .btn').addEventListener('click',
     if (!response.ok) {
       throw new Error('Network response was not ok ' + response.statusText);
     }
-    closePopup();
     return response.json();
   })
   .then(data => {
+    // Exibe uma mensagem de sucesso
     alert('Inscrição realizada com sucesso!');
+    
+    //fetchInscricoesUsuario();
+    window.location.reload(); 
   })
   .catch(error => {
     console.error('Error:', error);
     alert('Erro ao realizar a inscrição: ' + error.message);
   });
-});
+}
 
-// Fecha o modal ao clicar no botão "Ok" ou no "X"
-document.getElementById('closeModal').addEventListener('click', () => {
-  document.getElementById('responseModal').style.display = 'none';
-  fetchInscricoesUsuario();
-  window.location.reload();
-});
+
+

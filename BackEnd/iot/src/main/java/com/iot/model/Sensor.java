@@ -1,7 +1,10 @@
 package com.iot.model;
 
+import org.springframework.data.annotation.Id;
+
 public class Sensor {
 
+    @Id
     private Long id;
     private Long idSala; 
     private String tipo;
