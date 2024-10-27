@@ -20,12 +20,13 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
         if (!response.ok) {
             throw new Error('Erro ao realizar login: ' + response.statusText);
         }
-        return response.text(); // O token JWT é retornado como texto
+        return response.json(); // O token e o ID do usuário são retornados como JSON
     })
-    .then(token => {
-        if (token) {
-            // Salva o JWT no sessionStorage
-            sessionStorage.setItem('token', token);
+    .then(data => {
+        if (data.token) {
+            // Salva o JWT e o ID no sessionStorage
+            sessionStorage.setItem('token', data.token);
+            sessionStorage.setItem('ID', data.userId); // Salva o ID do usuário
 
             // Redireciona para a página de listagem de salas
             window.location.href = 'listagem-salas.html';
@@ -38,4 +39,3 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
         alert('Erro ao realizar login. Por favor, tente novamente.');
     });
 });
-

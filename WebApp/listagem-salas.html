@@ -5,27 +5,26 @@
   <link rel="stylesheet" href="css/listagem-salas.css">
 </head>
 <body>
+  <button id="logoutBtn">Logout</button>
   <div class="container" id="salaContainer">
     <!-- Os cards das inscrições serão adicionados aqui dinamicamente -->
-
     <div class="add-card">
       <button id="openPopupBtn">
         <img src="./img/simb_mais.png" alt="Addition Symbol">
       </button>  
     </div>
-
     <!-- Estrutura do Modal -->
     <div id="responseModal" class="modal">
       <div class="modal-content">
-        <span class="close-btn">&times;</span>
-        <h2>Detalhes da Sala</h2>
+        <span class="close-btn" onclick="closeResponseModal()">&times;</span> <!-- Botão para fechar o modal -->
+        <h2>Detalhes da Sala Criada</h2>
         <p><b>ID:</b> <span id="modalId"></span></p>
         <p><b>Nome da Sala:</b> <span id="modalNome"></span></p>
         <p><b>ID do Criador:</b> <span id="modalIdCriador"></span></p>
-        <button id="closeModal" class="btn">Ok</button>
+        <p id="modalSensorInfo"></p> <!-- Exibirá o tipo e ID de cada sensor -->
+        <button id="closeBtn" class="btn">Ok</button> <!-- Botão "Ok" para fechar o modal -->
       </div>
     </div>
-
     <!-- Popup para criar ou inscrever-se em uma sala -->
     <div id="criarSalaPopup" class="popup">
       <span class="close-btn" onclick="closePopup()">&times;</span>

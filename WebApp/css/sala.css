@@ -23,3 +23,12 @@ select {
     padding: 5px;
     border: 1px solid #ccc;
 }
+
+.btn {
+    background-color: #2196F3;
+    color: #fff;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}

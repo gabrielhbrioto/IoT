@@ -1,17 +1,22 @@
 package com.iot.service;
 
 import com.iot.model.Sala;
-import com.iot.repository.SalaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import com.iot.repository.InscricaoRepository;
+import com.iot.repository.SalaRepository;
+
 
 @Service
 public class SalaService {
 
     @Autowired
     private SalaRepository salaRepository;
+
+    @Autowired
+    private InscricaoRepository inscricaoRepository;
 
     public Mono<Sala> criarSala(Sala sala) {
         return salaRepository.save(sala);
@@ -25,8 +30,10 @@ public class SalaService {
         return salaRepository.findById(id);
     }
 
-    public Mono<Void> deletarSala(Long id) {
-        return salaRepository.deleteById(id);
+    public Mono<Void> deletarSalaComInscricoes(Long id) {
+        // Primeiro, exclui todas as inscrições relacionadas à sala
+        return inscricaoRepository.deleteByIdSala(id)
+            .then(salaRepository.deleteById(id)); // Depois, exclui a sala
     }    
     
 }
