@@ -39,4 +39,15 @@ public class InscricaoController {
         
         return inscricaoService.getInscricoesByUsuarioId(userId);
     }
+
+    // Novo endpoint para cancelar uma inscrição de uma sala específica
+    @DeleteMapping("/usuario/sala/{idSala}")
+    public Mono<Void> deleteInscricaoBySala(@PathVariable Long idSala,
+                                            @RequestHeader("Authorization") String authToken) {
+        String token = authToken.replace("Bearer ", "");
+        Long userId = jwtUtil.extractUserId(token); // Extrai o ID do usuário do token JWT
+        
+        // Chama o serviço para excluir a inscrição com o ID do usuário e o ID da sala
+        return inscricaoService.deleteByUserIdAndSalaId(userId, idSala);
+    }
 }

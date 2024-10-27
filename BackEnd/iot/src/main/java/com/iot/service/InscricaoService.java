@@ -28,4 +28,9 @@ public class InscricaoService {
     public Flux<Inscricao> getInscricoesByUsuarioId(Long idUsuario) {
         return inscricaoRepository.findByIdUsuario(idUsuario);
     }
+
+    // Novo método para deletar uma inscrição pelo ID do usuário e o ID da sala
+    public Mono<Void> deleteByUserIdAndSalaId(Long userId, Long salaId) {
+        return inscricaoRepository.deleteByIdUsuarioAndIdSala(userId, salaId);
+    }
 }

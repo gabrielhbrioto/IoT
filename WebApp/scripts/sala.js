@@ -74,23 +74,26 @@ function excluirSala(salaId) {
 }
 
 function cancelarInscricao(salaId) {
+
     const userId = sessionStorage.getItem('id');
     const token = sessionStorage.getItem('token');
 
-    fetch(`http://localhost:8080/inscricoes/${salaId}/${userId}`, {
+    fetch(`http://localhost:8080/inscricoes/usuario/sala/${salaId}`, {
         method: 'DELETE',
         headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${token}`, // Adiciona o token JWT no cabeçalho de autorização
+            'Content-Type': 'application/json'
         }
     })
     .then(response => {
         if (response.ok) {
-            alert('Inscrição cancelada com sucesso!');
-            // Redireciona ou atualiza a página
-            window.location.href = 'caminho_para_a_pagina_de_salvar'; // Altere conforme necessário
+            console.log("Inscrição cancelada com sucesso.");
+            window.location.href = "listagem-salas.html";
         } else {
-            throw new Error('Erro ao cancelar a inscrição');
+            console.error("Erro ao cancelar a inscrição:", response.status, response.statusText);
         }
     })
-    .catch(error => console.error('Erro ao cancelar inscrição:', error));
+    .catch(error => {
+        console.error("Erro na requisição:", error);
+    });
 }
