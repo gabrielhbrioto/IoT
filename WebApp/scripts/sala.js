@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const params = new URLSearchParams(window.location.search);
     const salaId = params.get('id');
-    const userId = sessionStorage.getItem('id'); // Obtém o ID do usuário
+    const userId = sessionStorage.getItem('ID'); // Obtém o ID do usuário
     const token = sessionStorage.getItem('token');
 
     if (salaId) {
@@ -20,6 +20,9 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(sala => {
             document.getElementById('salaTitulo').textContent = `Sala ${sala.nome}`;
             document.getElementById('salaId').textContent = `ID: ${sala.id}`;
+
+            console.log("sala.idCriador = " + sala.idCriador);
+            console.log("parseInt(userId, 10) = " + parseInt(userId, 10));
 
             // Verifica se o usuário é o criador da sala
             if (sala.idCriador === parseInt(userId, 10)) {
