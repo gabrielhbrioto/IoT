@@ -3,6 +3,8 @@ package com.iot.controller;
 import com.iot.model.Inscricao;
 import com.iot.model.Sala;
 import com.iot.model.Sensor;
+import com.iot.repository.InscricaoRepository;
+import com.iot.repository.SalaRepository;
 import com.iot.service.SalaService;
 import com.iot.service.SensorService; 
 import com.iot.service.InscricaoService; 
@@ -12,6 +14,8 @@ import com.iot.config.JwtUtil;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -20,6 +24,13 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping("/salas")
 public class SalaController {
+
+
+    @Autowired
+    private SalaRepository salaRepository;
+
+    @Autowired
+    private InscricaoRepository inscricaoRepository;
 
     private final SalaService salaService;
     private final SensorService sensorService; 
@@ -109,9 +120,13 @@ public class SalaController {
     }
 
     @DeleteMapping("/{id}")
-    public Mono<ResponseEntity<Object>> deleteSala(@PathVariable Long id) {
-        return salaService.deletarSala(id)
-                .then(Mono.just(ResponseEntity.noContent().build())) // Retorna um ResponseEntity<Void>
-                .onErrorReturn(ResponseEntity.notFound().build()); // Retorna um ResponseEntity<Void>
+    public Mono<ResponseEntity<String>> deleteSala(@PathVariable Long id) {
+        return salaRepository.findById(id)
+            .flatMap(sala -> salaRepository.deleteById(id)
+                .then(Mono.just(ResponseEntity.ok("Sala excluída com sucesso"))))
+            .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()))
+            .onErrorResume(e -> Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao deletar a sala: " + e.getMessage())));
     }
+
+
 }

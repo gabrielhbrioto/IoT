@@ -10,4 +10,5 @@ public interface InscricaoRepository extends R2dbcRepository<Inscricao, Long> {
 
     // Novo método para deletar uma inscrição com base no ID do usuário e no ID da sala
     Mono<Void> deleteByIdUsuarioAndIdSala(Long idUsuario, Long idSala);
+    Mono<Void> deleteByIdSala(Long idSala); // Exclui inscrições por ID da sala
 }
