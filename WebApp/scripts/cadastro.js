@@ -21,8 +21,6 @@ document.getElementById('cadastroForm').addEventListener('submit', function(even
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            // Se você estiver usando CSRF, adicione o token aqui
-            // 'X-CSRF-TOKEN': csrfToken
         },
         body: JSON.stringify(dados)
     })
@@ -35,7 +33,7 @@ document.getElementById('cadastroForm').addEventListener('submit', function(even
     .then(data => {
         console.log('Usuário cadastrado:', data);
         // Redirecionar para a tela de login ou fazer outra ação
-        window.location.href = 'login.html';
+        window.location.href = '/';
     })
     .catch(error => {
         console.error('Erro ao cadastrar o usuário:', error);

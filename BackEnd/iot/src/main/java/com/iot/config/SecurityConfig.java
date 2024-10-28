@@ -26,7 +26,7 @@ public class SecurityConfig {
             .csrf(ServerHttpSecurity.CsrfSpec::disable)
             .cors(cors -> cors.configurationSource(request -> {
                 CorsConfiguration configuration = new CorsConfiguration();
-                configuration.setAllowedOrigins(List.of("http://127.0.0.1:5500")); // Ou "*" para todas as origens
+                configuration.setAllowedOrigins(List.of("http://localhost:8081")); // Ou "*" para todas as origens
                 configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                 configuration.setAllowedHeaders(List.of("*"));
                 configuration.setAllowCredentials(true);

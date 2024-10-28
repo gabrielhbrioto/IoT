@@ -6,7 +6,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
     const password = document.getElementById('password').value;
 
     // Realiza a requisição para o backend
-    fetch('http://localhost:8080/auth/login', { // Altere a URL para a rota correta do seu backend
+    fetch('http://localhost:8080/auth/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
