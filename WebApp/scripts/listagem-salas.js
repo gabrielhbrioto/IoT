@@ -213,5 +213,5 @@ function inscreverSala() {
 
 document.getElementById('logoutBtn').addEventListener('click', () => {
   sessionStorage.clear(); // Limpa todo o conteúdo do sessionStorage
-  window.location.href = 'http://127.0.0.1:8081/index.html'; // Redireciona para a página de login
+  window.location.href = '/'; // Redireciona para a página de login
 });
