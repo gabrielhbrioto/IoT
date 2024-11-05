@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.ZonedDateTime;
+
 @RestController
 @RequestMapping("/medidas")
 public class MedidaController {
@@ -40,4 +42,14 @@ public class MedidaController {
         return medidaService.deleteMedida(id)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }
+
+    // Novo método para buscar medidas por ID da sala e período
+    @GetMapping("/periodo")
+    public Flux<Medida> listarMedidasPorPeriodo(
+            @RequestParam("idSala") Long idSala,
+            @RequestParam("inicio") ZonedDateTime inicio,
+            @RequestParam("fim") ZonedDateTime fim) {
+        return medidaService.listarMedidasPorPeriodo(idSala, inicio, fim);
+    }
+
 }

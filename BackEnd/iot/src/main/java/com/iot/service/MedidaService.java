@@ -8,11 +8,20 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import java.time.ZonedDateTime;
 
+//apagar:
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
 @Service
 public class MedidaService {
 
     @Autowired
     private MedidaRepository medidaRepository;
+
+    //apagar:
+    private static final Logger logger = LoggerFactory.getLogger(MedidaService.class);
+
 
     public Mono<Medida> registrarMedida(Medida medida) {
         return medidaRepository.save(medida);
@@ -23,6 +32,8 @@ public class MedidaService {
     }
 
     public Flux<Medida> listarMedidasPorPeriodo(Long idSala, ZonedDateTime inicio, ZonedDateTime fim) {
+        //apagar:
+        logger.info("Consulta SQL - Parâmetros: idSala={}, inicio={}, fim={}", idSala, inicio, fim);
         return medidaRepository.findByIdSalaAndHorarioBetween(idSala, inicio, fim);
     }
 
