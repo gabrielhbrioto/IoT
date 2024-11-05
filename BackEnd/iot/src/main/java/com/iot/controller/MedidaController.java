@@ -19,25 +19,25 @@ public class MedidaController {
 
     @GetMapping
     public Flux<Medida> getAllMedidas() {
-        return medidaService.getAllMedidas(); // Retorna Flux de Medidas
+        return medidaService.getAllMedidas();
     }
 
     @PostMapping
     public Mono<ResponseEntity<Medida>> createMedida(@RequestBody Medida medida) {
         return medidaService.registrarMedida(medida)
-                .map(novaMedida -> ResponseEntity.ok(novaMedida)); // Retorna a nova medida
+                .map(novaMedida -> ResponseEntity.ok(novaMedida));
     }
 
     @GetMapping("/{id}")
     public Mono<ResponseEntity<Medida>> getMedidaById(@PathVariable Long id) {
         return medidaService.getMedidaById(id)
-                .map(medida -> ResponseEntity.ok(medida)) // Retorna a medida encontrada
-                .defaultIfEmpty(ResponseEntity.notFound().build()); // Retorna 404 se não encontrado
+                .map(medida -> ResponseEntity.ok(medida))
+                .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
     public Mono<ResponseEntity<Void>> deleteMedida(@PathVariable Long id) {
         return medidaService.deleteMedida(id)
-                .then(Mono.just(ResponseEntity.noContent().build())); // Retorna resposta sem conteúdo
+                .then(Mono.just(ResponseEntity.noContent().build()));
     }
 }
