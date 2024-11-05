@@ -114,7 +114,29 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(dados => {
             // Manipula os dados recebidos e gere o gráfico
             console.log(dados);
-            // Aqui você pode chamar uma função para gerar o gráfico com os dados
+            const labels = dados.map(d => new Date(d.horario).toLocaleTimeString());
+            const valores = dados.map(d => d.valor);
+
+            const ctx = document.getElementById('meuGrafico').getContext('2d');
+            const meuGrafico = new Chart(ctx, {
+                type: 'line', // Tipo de gráfico
+                data: {
+                    labels: labels, // Horários como labels
+                    datasets: [{
+                        label: 'Valores do Sensor',
+                        data: valores, // Valores do sensor
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
         })
         .catch(error => {
             console.error('Erro ao carregar medidas:', error);
