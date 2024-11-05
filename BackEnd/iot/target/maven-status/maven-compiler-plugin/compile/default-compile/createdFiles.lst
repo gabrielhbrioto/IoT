@@ -9,7 +9,6 @@ com/iot/controller/UsuarioController.class
 com/iot/service/SensorService.class
 com/iot/model/Sala.class
 com/iot/App.class
-com/iot/config/SecurityConfig.class
 com/iot/service/CustomUserDetailsService.class
 com/iot/service/SalaService.class
 com/iot/controller/InscricaoController.class
