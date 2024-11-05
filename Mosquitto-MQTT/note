@@ -1,0 +1,20 @@
+Listar contêineres em execução
+docker ps
+
+Listar todos os contêineres
+docker ps -a
+
+Iniciar um contêiner
+docker start <ID ou NOME_DO_CONTAINER>
+
+Para um contêiner
+docker stop <ID ou NOME_DO_CONTAINER>
+
+Remover um contêiner
+docker rm <ID ou NOME_DO_CONTAINER>
+
+Remove uma imagem
+docker rmi <NOME ou ID_DA_IMAGEM>
+
+Abre o terminal do docker
+docker exec -it mosquitto /bin/sh
