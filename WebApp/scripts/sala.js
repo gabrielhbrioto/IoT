@@ -48,6 +48,103 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(error => console.error('Erro ao carregar dados:', error));
     }
+
+    // Adiciona event listeners ao botão e elementos de período
+    const btnEnviar = document.getElementById('btnEnviar');
+    const periodoRadios = document.querySelectorAll('input[name="consumo"]');
+    const periodoSelect = document.getElementById('periodo');
+
+    // Função para capturar o período selecionado e enviar a requisição
+    function capturarPeriodoEEnviarRequisicao() {
+        let inicio;
+        let fim = new Date().toISOString(); // Data de término é agora em formato ISO
+        const agora = new Date();
+        const valorSelecionado = document.querySelector('input[name="consumo"]:checked').value;
+
+        switch (valorSelecionado) {
+            case '24 horas':
+                inicio = new Date(agora.getTime() - 24 * 60 * 60 * 1000).toISOString(); // 24 horas atrás
+                break;
+            case '1 semana':
+                inicio = new Date(agora.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString(); // 1 semana atrás
+                break;
+            case '1 mês':
+                inicio = new Date(agora.setMonth(agora.getMonth() - 1)).toISOString(); // 1 mês atrás
+                break;
+            case 'outro':
+                const outroPeriodo = parseInt(document.getElementById('outro').value, 10);
+                const unidadePeriodo = periodoSelect.value;
+                if (isNaN(outroPeriodo) || outroPeriodo <= 0) {
+                    alert('Por favor, insira um valor válido.');
+                    return;
+                }
+
+                // Calcula o início baseado na unidade selecionada
+                if (unidadePeriodo === 'hora') {
+                    inicio = new Date(agora.getTime() - outroPeriodo * 60 * 60 * 1000).toISOString();
+                } else if (unidadePeriodo === 'dia') {
+                    inicio = new Date(agora.getTime() - outroPeriodo * 24 * 60 * 60 * 1000).toISOString();
+                } else if (unidadePeriodo === 'semana') {
+                    inicio = new Date(agora.getTime() - outroPeriodo * 7 * 24 * 60 * 60 * 1000).toISOString();
+                } else if (unidadePeriodo === 'mes') {
+                    inicio = new Date(agora.setMonth(agora.getMonth() - outroPeriodo)).toISOString();
+                }
+                break;
+            default:
+                alert('Selecione um período válido.');
+                return;
+        }
+
+        // Obtém o ID da sala a partir da URL
+        const token = sessionStorage.getItem('token');
+
+        // Faz a requisição ao backend
+        fetch(`http://localhost:8080/medidas/periodo?idSala=${salaId}&inicio=${encodeURIComponent(inicio)}&fim=${encodeURIComponent(fim)}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })        
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erro ao carregar medidas');
+            }
+            return response.json();
+        })
+        .then(dados => {
+            // Manipula os dados recebidos e gere o gráfico
+            console.log(dados);
+            const labels = dados.map(d => new Date(d.horario).toLocaleTimeString());
+            const valores = dados.map(d => d.valor);
+
+            const ctx = document.getElementById('meuGrafico').getContext('2d');
+            const meuGrafico = new Chart(ctx, {
+                type: 'line', // Tipo de gráfico
+                data: {
+                    labels: labels, // Horários como labels
+                    datasets: [{
+                        label: 'Valores do Sensor',
+                        data: valores, // Valores do sensor
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Erro ao carregar medidas:', error);
+        });
+    }
+
+    // Adiciona o event listener ao botão
+    btnEnviar.addEventListener('click', capturarPeriodoEEnviarRequisicao);
 });
 
 function excluirSala(salaId) {
@@ -63,17 +160,13 @@ function excluirSala(salaId) {
     })
     .then(response => {
         if (response.status === 200) {
-            // Sucesso na exclusão, redireciona para a página de listagem
             alert('Sala excluída com sucesso');
             window.location.href = 'listagem-salas.html';
         } else if (response.status === 403) {
-            // O usuário não é autorizado a excluir esta sala
             return response.text().then(text => alert(text));
         } else if (response.status === 404) {
-            // Sala não encontrada
             alert('Sala não encontrada');
         } else {
-            // Outro erro
             alert('Ocorreu um erro ao tentar excluir a sala');
         }
     })
@@ -84,14 +177,13 @@ function excluirSala(salaId) {
 }
 
 function cancelarInscricao(salaId) {
-
     const userId = sessionStorage.getItem('id');
     const token = sessionStorage.getItem('token');
 
     fetch(`http://localhost:8080/inscricoes/usuario/sala/${salaId}`, {
         method: 'DELETE',
         headers: {
-            'Authorization': `Bearer ${token}`, // Adiciona o token JWT no cabeçalho de autorização
+            'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
         }
     })

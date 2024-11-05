@@ -6,8 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
 import java.time.ZonedDateTime;
+
+//apagar:
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 @Service
 public class MedidaService {
@@ -15,27 +19,33 @@ public class MedidaService {
     @Autowired
     private MedidaRepository medidaRepository;
 
+    //apagar:
+    private static final Logger logger = LoggerFactory.getLogger(MedidaService.class);
+
+
     public Mono<Medida> registrarMedida(Medida medida) {
         return medidaRepository.save(medida);
     }
 
-    public Flux<Medida> listarMedidasPorSensor(Long idSensor) {
-        return medidaRepository.findByIdSensor(idSensor);
+    public Flux<Medida> listarMedidasPorSala(Long idSala) {
+        return medidaRepository.findByIdSala(idSala);
     }
 
-    public Flux<Medida> listarMedidasPorPeriodo(Long idSensor, ZonedDateTime inicio, ZonedDateTime fim) {
-        return medidaRepository.findByIdSensorAndHorarioBetween(idSensor, inicio, fim);
+    public Flux<Medida> listarMedidasPorPeriodo(Long idSala, ZonedDateTime inicio, ZonedDateTime fim) {
+        //apagar:
+        logger.info("Consulta SQL - Parâmetros: idSala={}, inicio={}, fim={}", idSala, inicio, fim);
+        return medidaRepository.findByIdSalaAndHorarioBetween(idSala, inicio, fim);
     }
 
     public Flux<Medida> getAllMedidas() {
-        return medidaRepository.findAll(); // Método para buscar todas as medidas
+        return medidaRepository.findAll();
     }
 
     public Mono<Medida> getMedidaById(Long id) {
-        return medidaRepository.findById(id); // Método para buscar medida pelo ID
+        return medidaRepository.findById(id);
     }
 
     public Mono<Void> deleteMedida(Long id) {
-        return medidaRepository.deleteById(id); // Método para deletar a medida pelo ID
+        return medidaRepository.deleteById(id);
     }
 }
