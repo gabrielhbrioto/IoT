@@ -14,7 +14,7 @@ import java.util.Map;
 @Component
 public class JwtUtil {
     private final String SECRET_KEY = "4zqxo88KGnvzSD9DR6HfU1z9n7zu/e5U/l7UM4Bvuew="; 
-    private final long EXPIRATION_TIME = 1000 * 60 * 60 * 24; // 24 horas
+    private final long EXPIRATION_TIME = 1000 * 60 * 60 * 1; // 1 hora
 
     // Gera a chave secreta como um objeto Key
     private Key getSigningKey() {
