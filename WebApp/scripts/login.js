@@ -28,8 +28,6 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
             sessionStorage.setItem('token', data.token);
             sessionStorage.setItem('ID', data.userId); // Salva o ID do usuário
 
-            console.log("Login efetuado com sucesso!");
-
             // Redireciona para a página de listagem de salas
             window.location.href = 'listagem-salas.html';
         } else {
