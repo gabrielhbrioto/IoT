@@ -75,7 +75,7 @@ public class SalaController {
 
                 return salaService.criarSala(sala)
                     .flatMap(novaSala -> {
-                        String topic = "medidas/" + novaSala.getId();
+                        String topic = novaSala.getId() + "/medidas";
                         //apagar:
                         logger.info("Tópico MQTT: {}", topic);
   

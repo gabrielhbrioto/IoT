@@ -12,7 +12,7 @@ public class Medida {
 
     private Long idSala; // Alterado para referenciar o ID da sala
 
-    private Integer valor;
+    private double valor;
 
     private ZonedDateTime horario;
 
@@ -35,11 +35,11 @@ public class Medida {
     }
 
     // Getter e Setter para o Valor
-    public Integer getValor() {
+    public double getValor() {
         return valor;
     }
 
-    public void setValor(Integer valor) {
+    public void setValor(double valor) {
         this.valor = valor;
     }
 
