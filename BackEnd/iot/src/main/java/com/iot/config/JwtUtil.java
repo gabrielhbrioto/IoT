@@ -4,6 +4,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -13,12 +15,16 @@ import java.util.Map;
 
 @Component
 public class JwtUtil {
-    private final String SECRET_KEY = "4zqxo88KGnvzSD9DR6HfU1z9n7zu/e5U/l7UM4Bvuew="; 
-    private final long EXPIRATION_TIME = 1000 * 60 * 60 * 1; // 1 hora
+    
+    @Value("${app.secret.key}")
+    private String secretKey;
+
+    @Value("${app.jwt.expiration}")
+    private String expirationTime;
 
     // Gera a chave secreta como um objeto Key
     private Key getSigningKey() {
-        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+        return Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 
     public String generateToken(String username, Long userId) {
@@ -28,12 +34,13 @@ public class JwtUtil {
     }
 
     private String createToken(Map<String, Object> claims, String subject) {
+        long expirationMillis = Long.parseLong(expirationTime);
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256) // Usa Key
+                .setExpiration(new Date(System.currentTimeMillis() + expirationMillis))
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
