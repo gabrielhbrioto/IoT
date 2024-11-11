@@ -4,48 +4,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="css/sala.css" media="screen" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <title>Detalhes da Sala</title>
 </head>
 <body>
-
-<h2 id="salaTitulo">Sala - Bloco</h2>
-
-<label for="id" id="salaId">ID:</label>
-<!--<label for="status" id="salaStatus">Status:</label>-->
-<label for="criador" id="salaCriador">Criador:</label>
-
-<button class="btn" id="btnExcluir" style="display: none;">Excluir Sala</button>
-<button class="btn" id="btnCancelarInscricao" style="display: none;">Cancelar Inscrição</button>
-
-<h3>Histórico de Consumo:</h3>
-<label>
-    <input type="radio" name="consumo" value="24 horas">
-    24 Horas
-</label>
-<label>
-    <input type="radio" name="consumo" value="1 semana">
-    1 Semana
-</label>
-<label>
-    <input type="radio" name="consumo" value="1 mês">
-    1 Mês
-</label>
-<label for="outro">
-    <input type="radio" name="consumo" value="outro">
-    Outro: 
-    <input type="text" id="outro" name="outro">
-</label>
-<select id="periodo" name="periodo">
-    <option value="hora">Hora</option>
-    <option value="dia">Dia</option>
-    <option value="semana">Semana</option>
-    <option value="mes">Mês</option>
-</select>
-
-<button id="btnEnviar" class="btn">Gerar Gráfico</button>
-
-<canvas id="meuGrafico" width="400" height="200"></canvas>
-
+<div id="container">
+    <div>
+        <button class="btn-voltar" onclick="voltarParaListagem()">
+            <i class="fas fa-arrow-left"></i> Voltar
+        </button>        
+        <h2 id="salaTitulo">Sala - Bloco</h2>
+    
+        <label for="id" id="salaId">ID:</label>
+        <!--<label for="status" id="salaStatus">Status:</label>-->
+        <label for="criador" id="salaCriador">Criador:</label>
+    
+        <button class="btn" id="btnExcluir" style="display: none;">Excluir Sala</button>
+        <button class="btn" id="btnCancelarInscricao" style="display: none;">Cancelar Inscrição</button>
+    
+        <h3>Histórico de Consumo:</h3>
+        <label>
+            <input type="radio" name="consumo" value="24 horas">
+            24 Horas
+        </label>
+        <label>
+            <input type="radio" name="consumo" value="1 semana">
+            1 Semana
+        </label>
+        <label>
+            <input type="radio" name="consumo" value="1 mês">
+            1 Mês
+        </label>
+        <label for="outro">
+            <input type="radio" name="consumo" value="outro">
+            Outro: 
+            <input type="text" id="outro" name="outro">
+        </label>
+        <select id="periodo" name="periodo">
+            <option value="hora">Hora</option>
+            <option value="dia">Dia</option>
+            <option value="semana">Semana</option>
+            <option value="mes">Mês</option>
+        </select>
+    
+        <button id="btnEnviar" class="btn">Gerar Gráfico</button>
+    </div>
+    <div>
+        <canvas id="graficoConsumo"></canvas>
+    </div>  
+</div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="scripts/sala.js"></script>
 </body>

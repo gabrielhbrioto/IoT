@@ -4,15 +4,21 @@ body {
 }
 
 #logoutBtn {
-  position: absolute; /* Coloca o botão no canto superior direito */
-  top: 20px; /* Ajusta a posição vertical */
-  right: 20px; /* Ajusta a posição horizontal */
+  position: absolute;
+  top: 20px;
+  right: 20px;
   background-color: #2196F3;
   color: #fff;
   padding: 12px 20px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+#logoutBtn i {
+  margin-right: 8px; /* Espaço entre o ícone e o texto */
 }
 
 .container {
