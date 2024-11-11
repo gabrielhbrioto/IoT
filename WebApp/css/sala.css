@@ -1,6 +1,32 @@
 body {
     font-family: Arial, sans-serif;
     margin: 20px;
+    width: 100%;
+    height: 100%;
+}
+
+#container {
+    padding: 2%;
+    display: flex;
+    gap: 10px;
+}
+
+#container > div:first-child {
+    flex: 1; /* A primeira seção ocupa apenas o espaço necessário */
+}
+
+#container > div:last-child {
+    flex: 3; /* A segunda seção (gráfico) ocupa o restante do espaço */
+}
+
+#graficoConsumo {
+    width: 100%; /* O canvas ocupa 100% da largura do seu container */
+    height: auto; /* Ajusta automaticamente a altura */
+}
+
+a {
+    text-decoration: none;
+    color: white;
 }
 
 h2 {
@@ -32,3 +58,26 @@ select {
     border-radius: 5px;
     cursor: pointer;
 }
+
+.btn-voltar {
+    display: flex;
+    align-items: center;
+    background-color: #2196F3;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.btn-voltar i {
+    margin-right: 8px; 
+}
+
+.btn-voltar:hover {
+    background-color: #0b7dda;
+}
+

@@ -20,7 +20,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
-//apagar:
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

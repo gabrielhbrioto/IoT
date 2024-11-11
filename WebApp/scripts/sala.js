@@ -1,3 +1,5 @@
+let graficoConsumo;
+
 document.addEventListener('DOMContentLoaded', () => {
     const params = new URLSearchParams(window.location.search);
     const salaId = params.get('id');
@@ -113,20 +115,25 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(dados => {
             // Manipula os dados recebidos e gere o gráfico
-            console.log(dados);
             const labels = dados.map(d => new Date(d.horario).toLocaleTimeString());
             const valores = dados.map(d => d.valor);
 
-            const ctx = document.getElementById('meuGrafico').getContext('2d');
-            const meuGrafico = new Chart(ctx, {
+            const ctx = document.getElementById('graficoConsumo').getContext('2d');
+
+            if (graficoConsumo) {
+                graficoConsumo.destroy();
+            }
+
+            graficoConsumo = new Chart(ctx, {
                 type: 'line', // Tipo de gráfico
                 data: {
                     labels: labels, // Horários como labels
                     datasets: [{
-                        label: 'Valores do Sensor',
+                        label: 'Consumo de energia [W]',
                         data: valores, // Valores do sensor
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 2
+                        borderColor: 'rgba(192, 135, 75, 1)',
+                        borderWidth: 2,
+                        pointRadius: 0
                     }]
                 },
                 options: {
@@ -199,3 +206,7 @@ function cancelarInscricao(salaId) {
         console.error("Erro na requisição:", error);
     });
 }
+
+function voltarParaListagem() {
+    window.location.href = "listagem-salas.html";
+  }

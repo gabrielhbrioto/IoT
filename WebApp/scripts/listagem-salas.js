@@ -215,3 +215,4 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
   sessionStorage.clear(); // Limpa todo o conteúdo do sessionStorage
   window.location.href = '/'; // Redireciona para a página de login
 });
+
