@@ -7,6 +7,38 @@ document.addEventListener('DOMContentLoaded', () => {
     const token = sessionStorage.getItem('token');
 
     if (salaId) {
+        // Faz a requisição para obter o estado inicial da sala
+        fetch(`http://localhost:8080/salas/${salaId}/estado`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erro ao carregar estado da sala');
+            }
+            return response.text(); // Recebe o estado como texto
+        })
+        .then(estado => {
+            // Define o botão inicial com base no estado recebido
+            switch (estado.toLowerCase()) {
+                case 'aceso':
+                    selecionarOpcao(1);
+                    break;
+                case 'automatico':
+                    selecionarOpcao(2);
+                    break;
+                case 'apagado':
+                    selecionarOpcao(3);
+                    break;
+                default:
+                    console.warn('Estado desconhecido:', estado);
+            }
+        })
+        .catch(error => console.error('Erro ao carregar estado da sala:', error));
+
+        // Carrega os dados gerais da sala
         fetch(`http://localhost:8080/salas/${salaId}`, {
             method: 'GET',
             headers: {
@@ -97,9 +129,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
         }
 
-        // Obtém o ID da sala a partir da URL
-        const token = sessionStorage.getItem('token');
-
         // Faz a requisição ao backend
         fetch(`http://localhost:8080/medidas/periodo?idSala=${salaId}&inicio=${encodeURIComponent(inicio)}&fim=${encodeURIComponent(fim)}`, {
             method: 'GET',
@@ -114,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return response.json();
         })
         .then(dados => {
-            // Manipula os dados recebidos e gere o gráfico
+            // Manipula os dados recebidos e gera o gráfico
             const labels = dados.map(d => new Date(d.horario).toLocaleTimeString());
             const valores = dados.map(d => d.valor);
 
@@ -153,6 +182,56 @@ document.addEventListener('DOMContentLoaded', () => {
     // Adiciona o event listener ao botão
     btnEnviar.addEventListener('click', capturarPeriodoEEnviarRequisicao);
 });
+
+function selecionarOpcao(opcao) {
+    const botoes = document.querySelectorAll('.triplo-botao');
+    const salaId = new URLSearchParams(window.location.search).get('id'); 
+    const token = sessionStorage.getItem('token'); 
+
+    let messageContent;
+    switch (opcao) {
+        case 1: 
+            messageContent = 'ACESO';
+            break;
+        case 2: 
+            messageContent = 'AUTOMATICO';
+            break;
+        case 3: 
+            messageContent = 'APAGADO';
+            break;
+    }
+
+    botoes.forEach((botao, index) => {
+        if (index === opcao - 1) {
+            botao.classList.add('ativo');
+        } else {
+            botao.classList.remove('ativo');
+        }
+    });
+
+    const requestBody = {
+        mensagem: messageContent
+    };
+
+    fetch(`http://localhost:8080/salas/${salaId}/estado`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestBody)
+    })
+    .then(response => {
+        if (response.ok) {
+            console.log("Mensagem enviada com sucesso:", messageContent);
+        } else {
+            console.error("Erro ao enviar mensagem:", response.status, response.statusText);
+        }
+    })
+    .catch(error => {
+        console.error("Erro na requisição:", error);
+    });
+}
 
 function excluirSala(salaId) {
     const token = sessionStorage.getItem('token');
@@ -209,55 +288,4 @@ function cancelarInscricao(salaId) {
 
 function voltarParaListagem() {
     window.location.href = "listagem-salas.html";
-}
-
-function selecionarOpcao(opcao) {
-    const botoes = document.querySelectorAll('.triplo-botao');
-    const salaId = new URLSearchParams(window.location.search).get('id'); 
-    const token = sessionStorage.getItem('token'); 
-
-    let messageContent;
-    switch (opcao) {
-
-        case 1: 
-            messageContent = 'aceso';
-            break;
-        case 2: 
-            messageContent = 'automatico';
-            break;
-        case 3: 
-            messageContent = 'apagado';
-            break;
-    }
-
-    botoes.forEach((botao, index) => {
-        if (index === opcao - 1) {
-            botao.classList.add('ativo');
-        } else {
-            botao.classList.remove('ativo');
-        }
-    });
-
-    const requestBody = {
-        mensagem: messageContent
-    };
-
-    fetch(`http://localhost:8080/salas/${salaId}/publicar`, {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(requestBody)
-    })
-    .then(response => {
-        if (response.ok) {
-            console.log("Mensagem enviada com sucesso:", messageContent);
-        } else {
-            console.error("Erro ao enviar mensagem:", response.status, response.statusText);
-        }
-    })
-    .catch(error => {
-        console.error("Erro na requisição:", error);
-    });
 }

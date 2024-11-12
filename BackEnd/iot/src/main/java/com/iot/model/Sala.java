@@ -11,8 +11,10 @@ public class Sala {
 
     private String nome;
 
-    private Long idCriador; // Mapeando apenas o ID do criador
+    private Long idCriador;
 
+    private String estado; 
+    
     // Getters e Setters
     public Long getId() {
         return id;
@@ -36,5 +38,13 @@ public class Sala {
 
     public void setIdCriador(Long idCriador) {
         this.idCriador = idCriador;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 }

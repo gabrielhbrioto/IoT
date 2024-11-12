@@ -31,9 +31,7 @@ public class SalaService {
     }
 
     public Mono<Void> deletarSalaComInscricoes(Long id) {
-        // Primeiro, exclui todas as inscrições relacionadas à sala
         return inscricaoRepository.deleteByIdSala(id)
-            .then(salaRepository.deleteById(id)); // Depois, exclui a sala
+            .then(salaRepository.deleteById(id));
     }    
-    
 }
