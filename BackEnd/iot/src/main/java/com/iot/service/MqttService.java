@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 public class MqttService {
 
     private MqttClient client;
-    private String brokerUrl = "tcp://172.24.95.98:1883";
+    private String brokerUrl = "tcp://localhost:1883";
     private String clientId = "backend-client";
     private static final Logger logger = LoggerFactory.getLogger(MqttService.class);
 
@@ -72,7 +72,7 @@ public class MqttService {
             double valor = Double.parseDouble(messageParts[0]);
 
             LocalDateTime localDateTime = LocalDateTime.parse(
-                messageParts[1], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SS"));
+                messageParts[1], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             ZonedDateTime horario = localDateTime.atZone(ZoneId.systemDefault());
 
             Medida medida = new Medida();
@@ -80,11 +80,24 @@ public class MqttService {
             medida.setValor(valor);
             medida.setHorario(horario);
 
+            logger.info("Medida: {}", medida);
+
             registrarMedida(medida).subscribe();
         });
     }
 
     private Mono<Medida> registrarMedida(Medida medida) {
         return medidaRepository.save(medida);
+    }
+
+    public void publish(String topic, String messageContent) {
+        try {
+            MqttMessage message = new MqttMessage(messageContent.getBytes());
+            message.setQos(0);
+            client.publish(topic, message);
+            logger.info("Mensagem publicada no tópico {}: {}", topic, messageContent);
+        } catch (MqttException e) {
+            logger.error("Erro ao publicar mensagem no tópico {}: {}", topic, e.getMessage());
+        }
     }
 }

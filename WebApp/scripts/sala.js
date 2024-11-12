@@ -209,4 +209,55 @@ function cancelarInscricao(salaId) {
 
 function voltarParaListagem() {
     window.location.href = "listagem-salas.html";
-  }
+}
+
+function selecionarOpcao(opcao) {
+    const botoes = document.querySelectorAll('.triplo-botao');
+    const salaId = new URLSearchParams(window.location.search).get('id'); 
+    const token = sessionStorage.getItem('token'); 
+
+    let messageContent;
+    switch (opcao) {
+
+        case 1: 
+            messageContent = 'aceso';
+            break;
+        case 2: 
+            messageContent = 'automatico';
+            break;
+        case 3: 
+            messageContent = 'apagado';
+            break;
+    }
+
+    botoes.forEach((botao, index) => {
+        if (index === opcao - 1) {
+            botao.classList.add('ativo');
+        } else {
+            botao.classList.remove('ativo');
+        }
+    });
+
+    const requestBody = {
+        mensagem: messageContent
+    };
+
+    fetch(`http://localhost:8080/salas/${salaId}/publicar`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestBody)
+    })
+    .then(response => {
+        if (response.ok) {
+            console.log("Mensagem enviada com sucesso:", messageContent);
+        } else {
+            console.error("Erro ao enviar mensagem:", response.status, response.statusText);
+        }
+    })
+    .catch(error => {
+        console.error("Erro na requisição:", error);
+    });
+}

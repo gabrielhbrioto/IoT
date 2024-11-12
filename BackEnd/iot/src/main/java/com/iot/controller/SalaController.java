@@ -158,5 +158,18 @@ public class SalaController {
             .onErrorResume(e -> Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao deletar a sala: " + e.getMessage())));
     }
 
+    @PostMapping("/{id}/publicar")
+    public ResponseEntity<String> enviarMensagemMqtt(@PathVariable Long id, @RequestBody Map<String, String> request) {
+        String topic = id + "/luzes";
+        String messageContent = request.get("mensagem");
+
+        try {
+            mqttService.publish(topic, messageContent);
+            return ResponseEntity.ok("Mensagem enviada para o tópico " + topic + ": " + messageContent);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao enviar mensagem para o tópico MQTT: " + e.getMessage());
+        }
+    }
+
 
 }
