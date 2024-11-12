@@ -57,7 +57,7 @@ void saveConfig() {
 // Função para carregar configurações da NVS
 void loadConfig() {
   preferences.begin("config", true); // Abre em modo de leitura
-  String server = preferences.getString("mqttServer", "192.168.1.10");
+  String server = preferences.getString("mqttServer", "0.0.0.0");
   String port = preferences.getString("mqttPort", "1883");
   String id = preferences.getString("mqttID", "ESP32Client");
   String tz = preferences.getString("timezone", "BRT3");
@@ -164,7 +164,9 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
   if (String(topic) == topic_luzes.c_str()) {
     if (message == "automatico"){
+      lastMovementTime = millis(); // Reseta o tempo da ultima detecção
       autoLight = true;
+      Serial.println("Modo automático ativado");
     } else if (message == "acender") {
       autoLight = false;
       turnOnLights();
@@ -179,7 +181,6 @@ void setup() {
   Serial.begin(115200);
   pinMode(pirPin, INPUT);
   pinMode(relayPin, OUTPUT);
-  digitalWrite(relayPin, HIGH);
 
   // Carrega as configurações salvas na NVS (caso existam)
   loadConfig();
