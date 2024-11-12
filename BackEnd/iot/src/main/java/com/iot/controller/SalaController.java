@@ -158,5 +158,38 @@ public class SalaController {
             .onErrorResume(e -> Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao deletar a sala: " + e.getMessage())));
     }
 
+    @PostMapping("/{id}/estado")
+    public Mono<ResponseEntity<String>> atualizarEstadoEEnviarMensagemMqtt(@PathVariable Long id, @RequestBody Map<String, String> request) {
+        String novoEstado = request.get("mensagem");
+    
+        // Valida o novo estado com base nos valores permitidos pela restrição do banco
+        if (!"aceso".equalsIgnoreCase(novoEstado) && !"automatico".equalsIgnoreCase(novoEstado) && !"apagado".equalsIgnoreCase(novoEstado)) {
+            return Mono.just(ResponseEntity.badRequest().body("Estado inválido. Os estados permitidos são: 'aceso', 'automatico', 'apagado'."));
+        }
+    
+        return salaService.buscarSalaPorId(id)
+                .flatMap(sala -> {
+                    sala.setEstado(novoEstado);
+                
+                    return salaService.criarSala(sala)
+                            .flatMap(salaAtualizada -> {
+                                try {
+                                    mqttService.publish(id + "/luzes", novoEstado);
+                                    return Mono.just(ResponseEntity.ok("Estado atualizado e mensagem enviada para o tópico: " + novoEstado));
+                                } catch (Exception e) {
+                                    return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao enviar mensagem: " + e.getMessage()));
+                                }
+                            });
+                })
+                .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/{id}/estado")
+    public Mono<ResponseEntity<String>> obterEstadoSala(@PathVariable Long id) {
+        return salaService.buscarSalaPorId(id)
+                .map(sala -> ResponseEntity.ok(sala.getEstado()))
+                .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
+
 
 }
