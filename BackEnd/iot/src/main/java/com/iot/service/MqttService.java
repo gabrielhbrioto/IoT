@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 public class MqttService {
 
     private MqttClient client;
-    private String brokerUrl = "tcp://localhost:1883";
+    private String brokerUrl = "tcp://172.24.143.53:1883";
     private String clientId = "backend-client";
     private static final Logger logger = LoggerFactory.getLogger(MqttService.class);
 
