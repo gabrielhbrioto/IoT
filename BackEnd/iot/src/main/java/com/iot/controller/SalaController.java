@@ -161,6 +161,7 @@ public class SalaController {
     @PostMapping("/{id}/estado")
     public Mono<ResponseEntity<String>> atualizarEstadoEEnviarMensagemMqtt(@PathVariable Long id, @RequestBody Map<String, String> request) {
         String novoEstado = request.get("mensagem");
+        logger.info("Novo estado: {}", novoEstado.toLowerCase());
     
         // Valida o novo estado com base nos valores permitidos pela restrição do banco
         if (!"aceso".equalsIgnoreCase(novoEstado) && !"automatico".equalsIgnoreCase(novoEstado) && !"apagado".equalsIgnoreCase(novoEstado)) {
@@ -170,11 +171,11 @@ public class SalaController {
         return salaService.buscarSalaPorId(id)
                 .flatMap(sala -> {
                     sala.setEstado(novoEstado);
-                
+                    
                     return salaService.criarSala(sala)
                             .flatMap(salaAtualizada -> {
                                 try {
-                                    mqttService.publish(id + "/luzes", novoEstado);
+                                    mqttService.publish(id + "/luzes", novoEstado.toLowerCase());
                                     return Mono.just(ResponseEntity.ok("Estado atualizado e mensagem enviada para o tópico: " + novoEstado));
                                 } catch (Exception e) {
                                     return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao enviar mensagem: " + e.getMessage()));
