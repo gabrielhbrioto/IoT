@@ -23,13 +23,13 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(estado => {
             // Define o botão inicial com base no estado recebido
             switch (estado.toLowerCase()) {
-                case 'aceso':
+                case 'acender':
                     selecionarOpcao(1);
                     break;
                 case 'automatico':
                     selecionarOpcao(2);
                     break;
-                case 'apagado':
+                case 'apagar':
                     selecionarOpcao(3);
                     break;
                 default:
@@ -191,13 +191,13 @@ function selecionarOpcao(opcao) {
     let messageContent;
     switch (opcao) {
         case 1: 
-            messageContent = 'ACESO';
+            messageContent = 'ACENDER';
             break;
         case 2: 
             messageContent = 'AUTOMATICO';
             break;
         case 3: 
-            messageContent = 'APAGADO';
+            messageContent = 'APAGAR';
             break;
     }
 
