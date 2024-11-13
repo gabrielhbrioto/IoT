@@ -3,6 +3,13 @@
 #include <WiFiManager.h>
 #include <Preferences.h>
 
+#define LED_PIN 2               // Pino do LED que pisca quando o reset é iniciado
+#define BOOT_BUTTON_PIN 0       // Pino do botão de boot
+#define BUTTON_PRESS_TIME 5000  // Tempo em milissegundos (5 segundos) para resetar
+#define PIR_PIN 4               // Pino do sensor de presença
+#define RELAY_PIN 5             // Pino do modulo rele onde será conectado a lampada
+#define VOLTAGE_SENSOR_PIN 34   // Pino do sensor de tensao
+#define CURRENT_SENSOR_PIN 35   // Pino do sensor de corrente
 
 // Variáveis de configuração do broker MQTT
 char mqttServer[40];        // Endereço do broker MQTT
@@ -19,29 +26,77 @@ const char* mqttPassword = "SENHA_MQTT"; // Senha MQTT, se necessário
 // Variável para armazenar o fuso horário configurado pelo usuário
 char timezone[10] = "BRT3"; // Fuso horário padrão (Brasil)
 
-// Pinos dos sensores e relé
-const int pirPin = 2;
-const int relayPin = 5;
-const int voltageSensorPin = 34;
-const int currentSensorPin = 35;
-
 float voltage = 0;
 float current = 0;
 float energyWh = 0;
 unsigned long lastTime = 0;
 unsigned long lastMovementTime = 0;
+int val = 0;  // Guarda o estado de leitura do sensor de presença
 const float voltageCalibration = 220.0;
 const float currentCalibration = 10.0;
 bool lightsOn = false;
 bool autoLight = true;  // Modo de luz automatico
 
-int pirState = LOW;
-int val = 0;
+// Variáveis para monitoramento do botão de reset das configurações
+volatile unsigned long buttonPressStart = 0;
+volatile bool buttonPressDetected = false;
+
 
 WiFiClient espClient;
 PubSubClient client(espClient);
 
 Preferences preferences; // Instância da NVS
+
+// Função de interrupção chamada ao pressionar o botão
+void IRAM_ATTR onBootButtonPress() {
+  if (digitalRead(BOOT_BUTTON_PIN) == LOW) { // Botão pressionado
+    buttonPressStart = millis();             // Marca o tempo de início
+    buttonPressDetected = true;              // Indica que o botão foi pressionado
+  } else {
+    buttonPressDetected = false;             // Botão solto, reseta o estado
+  }
+}
+
+// Função para fazer o LED piscar várias vezes antes do reset
+void blinkLED(int times, int delayMs) {
+  for (int i = 0; i < times; i++) {
+    digitalWrite(LED_PIN, HIGH);  // Acende o LED
+    vTaskDelay(delayMs / portTICK_PERIOD_MS);
+    digitalWrite(LED_PIN, LOW);   // Apaga o LED
+    vTaskDelay(delayMs / portTICK_PERIOD_MS);
+  }
+}
+
+// Reseta todas as configurações salvas e reseta a esp32
+void resetConfigurations() {
+  Serial.println("Resetando configurações...");
+
+  // Pisca o LED 5 vezes para indicar o reset
+  blinkLED(5, 200); // Pisca 5 vezes com 200ms de intervalo
+
+  // Resetar as configurações do WiFiManager
+  WiFiManager wifiManager;
+  wifiManager.resetSettings();
+  
+  // Resetar os dados na NVS
+  preferences.begin("config", false);
+  preferences.clear();
+  preferences.end();
+
+  Serial.println("Configurações resetadas. Reiniciando o dispositivo...");
+  ESP.restart();
+}
+
+// Task que verifica se o botão foi pressionado por tempo suficiente para resetar
+void buttonLongPressTask(void* pvParameters) {
+  while (true) {
+    if (buttonPressDetected && (millis() - buttonPressStart >= BUTTON_PRESS_TIME)) {
+      resetConfigurations(); // Chama a função para resetar configurações
+    }
+    vTaskDelay(100 / portTICK_PERIOD_MS); // Checa a cada 100 ms
+  }
+}
+
 
 // Função para salvar configurações na NVS
 void saveConfig() {
@@ -104,12 +159,12 @@ String getTime() {
 }
 
 float readVoltage() {
-  int sensorValue = analogRead(voltageSensorPin);
+  int sensorValue = analogRead(VOLTAGE_SENSOR_PIN);
   return (sensorValue / 4096.0) * 3.3 * voltageCalibration;
 }
 
 float readCurrent() {
-  int sensorValue = analogRead(currentSensorPin);
+  int sensorValue = analogRead(CURRENT_SENSOR_PIN);
   return (sensorValue / 4096.0) * 3.3 * currentCalibration;
 }
 
@@ -125,31 +180,34 @@ void calculateEnergy() {
 }
 
 void turnOnLights() {
-  digitalWrite(relayPin, HIGH);
+  digitalWrite(RELAY_PIN, HIGH);
   lightsOn = true;
   Serial.println("Luzes acesas");
 }
 
 void turnOffLights() {
-  digitalWrite(relayPin, LOW);
+  digitalWrite(RELAY_PIN, LOW);
   lightsOn = false;
   Serial.println("Luzes apagadas");
 }
 
-// Controla a iluminadaçao caso esteja no modo automatico
-void lightsControl(){
-  if(autoLight){
-    val = digitalRead(pirPin);
-    if (val == HIGH) {
-      lastMovementTime = millis();
-      if (!lightsOn) {
-        turnOnLights();
+// Task que controla a iluminadaçao caso esteja no modo automatico
+void lightsControlTask(void* pvParameters) {
+  while (true) {
+    if (autoLight) {
+      val = digitalRead(PIR_PIN);
+      if (val == HIGH) {
+        lastMovementTime = millis();
+        if (!lightsOn) {
+          turnOnLights();
+        }
+      }
+
+      if (lightsOn && (millis() - lastMovementTime) > 1 * 5 * 1000) {
+        turnOffLights();
       }
     }
-
-    if (lightsOn && (millis() - lastMovementTime) > 1 * 5 * 1000) {
-      turnOffLights();
-    }
+    vTaskDelay(100 / portTICK_PERIOD_MS); // Checa a cada 100 ms
   }
 }
 
@@ -177,17 +235,37 @@ void callback(char* topic, byte* payload, unsigned int length) {
   }
 }
 
+// Tenta reconectar ao WiFi novamente
+void wifiReconnectTask(void* pvParameters) {
+  while (true) {
+    if (WiFi.status() != WL_CONNECTED) {
+      Serial.println("Conexão Wi-Fi perdida. Tentando reconectar...");
+      WiFi.begin();  // Inicia uma tentativa de reconexão ao Wi-Fi
+    }
+    vTaskDelay(5000 / portTICK_PERIOD_MS); // Verifica a cada 5 segundos
+  }
+}
+
 void setup() {
   Serial.begin(115200);
-  pinMode(pirPin, INPUT);
-  pinMode(relayPin, OUTPUT);
+  pinMode(BOOT_BUTTON_PIN, INPUT_PULLUP);
+  pinMode(PIR_PIN, INPUT);
+  pinMode(RELAY_PIN, OUTPUT);
+  pinMode(LED_PIN, OUTPUT);
+
+
+  // Configuração da interrupção para o botão de boot
+  attachInterrupt(digitalPinToInterrupt(BOOT_BUTTON_PIN), onBootButtonPress, CHANGE);
+  xTaskCreate(buttonLongPressTask, "Button Long Press Task", 2048, NULL, 1, NULL);
+
+  // Task para controle das luzes
+  xTaskCreate(lightsControlTask, "Lights Control Task", 2048, NULL, 1, NULL); 
 
   // Carrega as configurações salvas na NVS (caso existam)
   loadConfig();
 
   /********** Configuração do Wi-Fi com WiFiManager ***********/
   WiFiManager wifiManager;
-  //wifiManager.resetSettings();  // Limpa as redes salvas
   // Parâmetros personalizados para configuração do broker MQTT e timezone
   WiFiManagerParameter custom_mqtt_server("server", "Endereço broker MQTT", mqttServer, 40);
   WiFiManagerParameter custom_mqtt_port("port", "Porta do broker MQTT", mqttPort, 6);
@@ -224,27 +302,20 @@ void setup() {
   setenv("TZ", timezone, 1); // Define o fuso horário usando a variável `timezone`
   tzset();
   lastTime = millis();
+
+  xTaskCreate(wifiReconnectTask, "WiFi Reconnect Task", 4096, NULL, 1, NULL);
 }
 
 void loop() {
-  // Conexão ao Wi-Fi
-  if(WiFi.status() != WL_CONNECTED) {
-    Serial.println("Conexão Wi-Fi perdida. Tentando reconectar...");
-    WiFi.begin();  // Inicia uma tentativa de conexão
-  }
-
   // Conexão ao broaker MQTT
   if (!client.connected()) {
     reconnect();
   }
   client.loop();
 
-  // Função de controle automatico das luzes
-  lightsControl();
-
   // Envio de mensagem MQTT com valor e timestamp
-  int randomNumber = random(1, 100);
-  String powerMessage = String(randomNumber) + " | " + getTime();
+  int randomNumber = random(1, 10);
+  String powerMessage = String(randomNumber + 90) + " | " + getTime();
   Serial.println(powerMessage);
   client.publish(topic_medidas.c_str(), powerMessage.c_str());
 
