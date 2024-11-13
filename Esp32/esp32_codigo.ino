@@ -1,6 +1,5 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
-#include <time.h>
 #include <WiFiManager.h>
 #include <Preferences.h>
 
@@ -28,13 +27,13 @@ const int currentSensorPin = 35;
 
 float voltage = 0;
 float current = 0;
-float power = 0;
 float energyWh = 0;
 unsigned long lastTime = 0;
 unsigned long lastMovementTime = 0;
 const float voltageCalibration = 220.0;
 const float currentCalibration = 10.0;
 bool lightsOn = false;
+bool autoLight = true;  // Modo de luz automatico
 
 int pirState = LOW;
 int val = 0;
@@ -58,7 +57,7 @@ void saveConfig() {
 // Função para carregar configurações da NVS
 void loadConfig() {
   preferences.begin("config", true); // Abre em modo de leitura
-  String server = preferences.getString("mqttServer", "192.168.1.10");
+  String server = preferences.getString("mqttServer", "0.0.0.0");
   String port = preferences.getString("mqttPort", "1883");
   String id = preferences.getString("mqttID", "ESP32Client");
   String tz = preferences.getString("timezone", "BRT3");
@@ -114,32 +113,49 @@ float readCurrent() {
   return (sensorValue / 4096.0) * 3.3 * currentCalibration;
 }
 
-void calculatePower() {
+void calculateEnergy() {
   voltage = readVoltage();
   current = readCurrent();
-  power = voltage * current;
-  
+
   unsigned long currentTime = millis();
   unsigned long timeElapsed = currentTime - lastTime;
   
-  energyWh += (power * timeElapsed) / (1000.0 * 3600.0);
+  energyWh += (voltage * current * timeElapsed) / (1000.0 * 3600.0);
   lastTime = currentTime;
 }
 
 void turnOnLights() {
-  digitalWrite(relayPin, LOW);
+  digitalWrite(relayPin, HIGH);
   lightsOn = true;
   Serial.println("Luzes acesas");
 }
 
 void turnOffLights() {
-  digitalWrite(relayPin, HIGH);
+  digitalWrite(relayPin, LOW);
   lightsOn = false;
   Serial.println("Luzes apagadas");
 }
 
+// Controla a iluminadaçao caso esteja no modo automatico
+void lightsControl(){
+  if(autoLight){
+    val = digitalRead(pirPin);
+    if (val == HIGH) {
+      lastMovementTime = millis();
+      if (!lightsOn) {
+        turnOnLights();
+      }
+    }
+
+    if (lightsOn && (millis() - lastMovementTime) > 1 * 5 * 1000) {
+      turnOffLights();
+    }
+  }
+}
+
 void callback(char* topic, byte* payload, unsigned int length) {
   String message;
+
   for (int i = 0; i < length; i++) {
     message += (char)payload[i];
   }
@@ -147,12 +163,16 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Serial.println(message);
 
   if (String(topic) == topic_luzes.c_str()) {
-    if (message == "acender") {
+    if (message == "automatico"){
+      lastMovementTime = millis(); // Reseta o tempo da ultima detecção
+      autoLight = true;
+      Serial.println("Modo automático ativado");
+    } else if (message == "acender") {
+      autoLight = false;
       turnOnLights();
     } else if (message == "apagar") {
+      autoLight = false;
       turnOffLights();
-    } else if (message == "automatico"){
-      
     }
   }
 }
@@ -161,7 +181,6 @@ void setup() {
   Serial.begin(115200);
   pinMode(pirPin, INPUT);
   pinMode(relayPin, OUTPUT);
-  digitalWrite(relayPin, HIGH);
 
   // Carrega as configurações salvas na NVS (caso existam)
   loadConfig();
@@ -208,30 +227,20 @@ void setup() {
 }
 
 void loop() {
-  // Conexão ao Wi-Fi e ao broker MQTT
-  if (WiFi.status() != WL_CONNECTED) {
+  // Conexão ao Wi-Fi
+  if(WiFi.status() != WL_CONNECTED) {
     Serial.println("Conexão Wi-Fi perdida. Tentando reconectar...");
-    WiFiManager wifiManager;
-    wifiManager.autoConnect("ESP32");
+    WiFi.begin();  // Inicia uma tentativa de conexão
   }
 
+  // Conexão ao broaker MQTT
   if (!client.connected()) {
     reconnect();
   }
   client.loop();
 
-  val = digitalRead(pirPin);
-
-  if (val == HIGH) {
-    lastMovementTime = millis();
-    if (!lightsOn) {
-      turnOnLights();
-    }
-  }
-
-  if (lightsOn && (millis() - lastMovementTime) > 30 * 60 * 1000) {
-    turnOffLights();
-  }
+  // Função de controle automatico das luzes
+  lightsControl();
 
   // Envio de mensagem MQTT com valor e timestamp
   int randomNumber = random(1, 100);
