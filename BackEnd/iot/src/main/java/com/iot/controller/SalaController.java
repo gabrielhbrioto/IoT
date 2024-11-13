@@ -164,8 +164,8 @@ public class SalaController {
         logger.info("Novo estado: {}", novoEstado.toLowerCase());
     
         // Valida o novo estado com base nos valores permitidos pela restrição do banco
-        if (!"aceso".equalsIgnoreCase(novoEstado) && !"automatico".equalsIgnoreCase(novoEstado) && !"apagado".equalsIgnoreCase(novoEstado)) {
-            return Mono.just(ResponseEntity.badRequest().body("Estado inválido. Os estados permitidos são: 'aceso', 'automatico', 'apagado'."));
+        if (!"acender".equalsIgnoreCase(novoEstado) && !"automatico".equalsIgnoreCase(novoEstado) && !"apagar".equalsIgnoreCase(novoEstado)) {
+            return Mono.just(ResponseEntity.badRequest().body("Estado inválido. Os estados permitidos são: 'acender', 'automatico', 'apagar'."));
         }
     
         return salaService.buscarSalaPorId(id)
