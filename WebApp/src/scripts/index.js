@@ -1,3 +1,10 @@
+import '../../css/login.css';    
+
+import loginImage from '../../img/login.png';
+
+document.getElementById('login-image').src = loginImage;
+
+
 document.getElementById('loginForm').addEventListener('submit', function(event) {
     event.preventDefault(); // Previne o envio padrão do formulário
 
@@ -6,7 +13,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
     const password = document.getElementById('password').value;
 
     // Realiza a requisição para o backend
-    fetch('http://localhost:8080/auth/login', {
+    fetch(`${process.env.API_URL}/auth/login`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

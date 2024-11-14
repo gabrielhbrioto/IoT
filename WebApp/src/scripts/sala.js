@@ -1,3 +1,5 @@
+import '../../css/sala.css';
+
 let graficoConsumo;
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -222,9 +224,7 @@ function selecionarOpcao(opcao) {
         body: JSON.stringify(requestBody)
     })
     .then(response => {
-        if (response.ok) {
-            console.log("Mensagem enviada com sucesso:", messageContent);
-        } else {
+        if (!response.ok) {
             console.error("Erro ao enviar mensagem:", response.status, response.statusText);
         }
     })
@@ -235,7 +235,6 @@ function selecionarOpcao(opcao) {
 
 function excluirSala(salaId) {
     const token = sessionStorage.getItem('token');
-    console.log(salaId);
 
     fetch(`http://localhost:8080/salas/${salaId}`, {
         method: 'DELETE',
@@ -275,7 +274,6 @@ function cancelarInscricao(salaId) {
     })
     .then(response => {
         if (response.ok) {
-            console.log("Inscrição cancelada com sucesso.");
             window.location.href = "listagem-salas.html";
         } else {
             console.error("Erro ao cancelar a inscrição:", response.status, response.statusText);
@@ -289,3 +287,8 @@ function cancelarInscricao(salaId) {
 function voltarParaListagem() {
     window.location.href = "listagem-salas.html";
 }
+
+window.selecionarOpcao = selecionarOpcao;
+window.excluirSala = excluirSala;
+window.cancelarInscricao = cancelarInscricao;
+window.voltarParaListagem = voltarParaListagem;

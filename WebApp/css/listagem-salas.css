@@ -88,7 +88,7 @@ body {
   margin-bottom: 5px;
 }
 
-.popup input[type="text"], .popup input[type="password"] {
+#nomeSala {
   width: 100%;
   padding: 10px;
   border: 1px solid #ccc;

@@ -1,3 +1,9 @@
+import '../../css/listagem-salas.css';
+
+import additionSymbol from '../../img/simb_mais.png';
+
+document.getElementById('addition-symbol').src = additionSymbol;
+
 const openPopupBtn = document.getElementById('openPopupBtn');
 const criarSalaPopup = document.getElementById('criarSalaPopup');
 const criarSalaContent = document.querySelector('.criar-sala-content');

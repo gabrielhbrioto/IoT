@@ -1,3 +1,5 @@
+import '../../css/cadastro.css';
+
 // Função para validar o formato do email usando regex
 function validarEmail(email) {
     const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
