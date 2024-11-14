@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Salas</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" /></head>
+<body>
+  <button id="logoutBtn">
+    <i class="fas fa-sign-out-alt"></i> Logout
+  </button>
+
+  <div class="container" id="salaContainer">
+    <!-- Os cards das inscrições serão adicionados aqui dinamicamente -->
+    <div class="add-card">
+      <button id="openPopupBtn">
+        <img id="addition-symbol" alt="Addition Symbol">
+      </button>  
+    </div>
+    <!-- Estrutura do Modal -->
+    <div id="responseModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeResponseModal()">&times;</span> <!-- Botão para fechar o modal -->
+        <h2>Detalhes da Sala Criada</h2>
+        <p><b>ID:</b> <span id="modalId"></span></p>
+        <p><b>Nome da Sala:</b> <span id="modalNome"></span></p>
+        <p><b>ID do Criador:</b> <span id="modalIdCriador"></span></p>
+        <p id="modalSensorInfo"></p> <!-- Exibirá o tipo e ID de cada sensor -->
+        <button id="closeBtn" class="btn">Ok</button> <!-- Botão "Ok" para fechar o modal -->
+      </div>
+    </div>
+    <!-- Popup para criar ou inscrever-se em uma sala -->
+    <div id="criarSalaPopup" class="popup">
+      <span class="close-btn" onclick="closePopup()">&times;</span>
+      <h2>Criar Sala</h2>
+      <div class="radio-group">
+        <input type="radio" id="criarSalaRadio" name="salaAction" checked onchange="changeContent('criar-sala-content')">
+        <label for="criarSalaRadio">Criar Sala</label>
+      </div>
+      <div class="radio-group">
+        <input type="radio" id="inscreverSalaRadio" name="salaAction" onchange="changeContent('inscrever-sala-content')">
+        <label for="inscreverSalaRadio">Inscrever-se em uma Sala</label>
+      </div>
+      <div class="criar-sala-content show">
+        <label for="nomeSala">Insira o Nome da Sala:</label>
+        <input type="text" id="nomeSala" name="nomeSala">
+        <button type="submit" class="btn">Criar Sala</button>
+      </div>
+      <div class="inscrever-sala-content">
+        <label for="idSala">Insira o ID da Sala:</label>
+        <input type="text" id="idSala" name="idSala">
+        <button type="submit" class="btn">Inscrever-se</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
