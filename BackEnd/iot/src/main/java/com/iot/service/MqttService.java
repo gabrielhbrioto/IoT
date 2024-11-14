@@ -10,6 +10,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Flux;
@@ -27,8 +28,13 @@ import org.slf4j.LoggerFactory;
 public class MqttService {
 
     private MqttClient client;
-    private String brokerUrl = "tcp://localhost:1883";
-    private String clientId = "backend-client";
+    
+    @Value("${mqtt.broker-url}")
+    private String brokerUrl;
+
+    @Value("${mqtt.client-id}")
+    private String clientId;
+
     private static final Logger logger = LoggerFactory.getLogger(MqttService.class);
 
     @Autowired
@@ -37,13 +43,20 @@ public class MqttService {
     @Autowired
     private SalaRepository salaRepository;
 
-    public MqttService() throws MqttException {
+    public MqttService() {
+        
+    }
+
+    @PostConstruct
+    public void init() throws MqttException {
         MemoryPersistence persistence = new MemoryPersistence();
         client = new MqttClient(brokerUrl, clientId, persistence);
 
         MqttConnectOptions connOpts = new MqttConnectOptions();
         connOpts.setCleanSession(true);
         client.connect(connOpts);
+        logger.info("Conexão com MQTT Broker estabelecida em {}", brokerUrl);
+        subscribeToAllSalaTopics();
     }
 
     @PostConstruct
