@@ -1,5 +1,5 @@
-# Começar a aplicação
-./Commands/start_containers.sh
+# Inicializar os containers
+docker compose start
 
-# Parar a aplicação
-./Commands/stop_containers.sh
+# Parar os containers
+docker compose stop
