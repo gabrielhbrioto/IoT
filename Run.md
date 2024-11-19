@@ -1,5 +1,5 @@
 # Inicializar os containers
-docker compose start
+set -a && source docker.conf && docker compose start
 
 # Parar os containers
 docker compose stop
