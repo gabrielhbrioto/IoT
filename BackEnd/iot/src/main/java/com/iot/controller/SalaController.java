@@ -24,9 +24,6 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-//apagar:
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/salas")
@@ -38,9 +35,6 @@ public class SalaController {
 
     @Autowired
     private InscricaoRepository inscricaoRepository;
-
-    //apagar:
-    private static final Logger logger = LoggerFactory.getLogger(MedidaService.class);
 
     private final MqttService mqttService;
 
@@ -76,8 +70,6 @@ public class SalaController {
                 return salaService.criarSala(sala)
                     .flatMap(novaSala -> {
                         String topic = novaSala.getId() + "/medidas";
-                        //apagar:
-                        logger.info("Tópico MQTT: {}", topic);
   
                         try {
                             mqttService.subscribe(topic); // Tenta se inscrever no tópico
@@ -161,8 +153,6 @@ public class SalaController {
     @PostMapping("/{id}/estado")
     public Mono<ResponseEntity<String>> atualizarEstadoEEnviarMensagemMqtt(@PathVariable Long id, @RequestBody Map<String, String> request) {
         String novoEstado = request.get("mensagem");
-        logger.info("Novo estado: {}", novoEstado.toLowerCase());
-    
         // Valida o novo estado com base nos valores permitidos pela restrição do banco
         if (!"acender".equalsIgnoreCase(novoEstado) && !"automatico".equalsIgnoreCase(novoEstado) && !"apagar".equalsIgnoreCase(novoEstado)) {
             return Mono.just(ResponseEntity.badRequest().body("Estado inválido. Os estados permitidos são: 'acender', 'automatico', 'apagar'."));
