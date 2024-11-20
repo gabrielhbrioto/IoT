@@ -6,7 +6,8 @@ services:
     image: ${MOSQUITTO_IMAGE}
     container_name: ${MOSQUITTO_CONTAINER}
     ports:
-      - "${MOSQUITTO_PORTS}"
+      - "${MOSQUITTO_PORTS_1}"
+      - "${MOSQUITTO_PORTS_2}"
     restart: always
 
   webapp:
