@@ -1,0 +1,22 @@
+services:
+  mosquitto:
+    build:
+      context: ${MOSQUITTO_CONTEXT}
+      dockerfile: ${MOSQUITTO_DOCKERFILE}
+    image: ${MOSQUITTO_IMAGE}
+    container_name: ${MOSQUITTO_CONTAINER}
+    ports:
+      - "${MOSQUITTO_PORTS}"
+    restart: always
+
+  webapp:
+    build:
+      context: ${WEBAPP_CONTEXT}
+      dockerfile: ${WEBAPP_DOCKERFILE}
+    image: ${WEBAPP_IMAGE}
+    container_name: ${WEBAPP_CONTAINER}
+    depends_on:
+      - mosquitto
+    ports:
+      - "${WEBAPP_PORTS}"
+    restart: always
