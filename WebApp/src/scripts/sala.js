@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (salaId) {
         // Faz a requisição para obter o estado inicial da sala
-        fetch(`http://localhost:8080/salas/${salaId}/estado`, {
+        fetch(`http://backend:8080/salas/${salaId}/estado`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(error => console.error('Erro ao carregar estado da sala:', error));
 
         // Carrega os dados gerais da sala
-        fetch(`http://localhost:8080/salas/${salaId}`, {
+        fetch(`http://backend:8080/salas/${salaId}`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('btnCancelarInscricao').onclick = () => cancelarInscricao(sala.id);
             }
 
-            return fetch(`http://localhost:8080/usuarios/${sala.idCriador}`, {
+            return fetch(`http://backend:8080/usuarios/${sala.idCriador}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Faz a requisição ao backend
-        fetch(`http://localhost:8080/medidas/periodo?idSala=${salaId}&inicio=${encodeURIComponent(inicio)}&fim=${encodeURIComponent(fim)}`, {
+        fetch(`http://backend:8080/medidas/periodo?idSala=${salaId}&inicio=${encodeURIComponent(inicio)}&fim=${encodeURIComponent(fim)}`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -215,7 +215,7 @@ function selecionarOpcao(opcao) {
         mensagem: messageContent
     };
 
-    fetch(`http://localhost:8080/salas/${salaId}/estado`, {
+    fetch(`http://backend:8080/salas/${salaId}/estado`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -236,7 +236,7 @@ function selecionarOpcao(opcao) {
 function excluirSala(salaId) {
     const token = sessionStorage.getItem('token');
 
-    fetch(`http://localhost:8080/salas/${salaId}`, {
+    fetch(`http://backend:8080/salas/${salaId}`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -265,7 +265,7 @@ function cancelarInscricao(salaId) {
     const userId = sessionStorage.getItem('id');
     const token = sessionStorage.getItem('token');
 
-    fetch(`http://localhost:8080/inscricoes/usuario/sala/${salaId}`, {
+    fetch(`http://backend:8080/inscricoes/usuario/sala/${salaId}`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${token}`,

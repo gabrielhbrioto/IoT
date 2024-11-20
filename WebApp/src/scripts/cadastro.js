@@ -25,7 +25,7 @@ document.getElementById('cadastroForm').addEventListener('submit', function(even
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(dados)
-    })
+    })    
     .then(response => {
         if (!response.ok) {
             throw new Error('Network response was not ok');

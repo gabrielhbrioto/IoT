@@ -83,7 +83,7 @@ function fetchInscricoesUsuario() {
   // Limpa o container antes de adicionar novos cards
   salaContainer.innerHTML = '';
 
-  fetch('http://localhost:8080/inscricoes/usuario', {
+  fetch('http://backend:8080/inscricoes/usuario', {
     method: 'GET',
     headers: {
       'Authorization': `Bearer ${token}`
@@ -116,7 +116,7 @@ function fetchInscricoesUsuario() {
 function criarCardSala(inscricao) {
   const token = sessionStorage.getItem('token'); // Recupera o token JWT
 
-  fetch(`http://localhost:8080/salas/${inscricao.idSala}`, {
+  fetch(`http://backend:8080/salas/${inscricao.idSala}`, {
     method: 'GET',
     headers: {
       'Authorization': `Bearer ${token}`
@@ -159,7 +159,7 @@ function criarSala() {
   const nomeSala = document.getElementById('nomeSala').value;
   const token = sessionStorage.getItem('token');
 
-  fetch('http://localhost:8080/salas', {
+  fetch('http://backend:8080/salas', {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -202,7 +202,7 @@ function inscreverSala() {
   const idSala = document.getElementById('idSala').value;
   const token = sessionStorage.getItem('token');
 
-  fetch('http://localhost:8080/inscricoes', {
+  fetch('http://backend:8080/inscricoes', {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,

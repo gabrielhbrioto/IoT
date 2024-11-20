@@ -10,7 +10,7 @@ set -a && source docker.conf && docker compose up --build -d
 
 # Ações
 # Remover containers
-docker compose down
+set -a && source docker.conf && docker compose down
 
 # Criar imagens
-docker compose build
+set -a && source docker.conf && docker compose build

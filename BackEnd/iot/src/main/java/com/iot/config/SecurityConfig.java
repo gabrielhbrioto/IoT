@@ -12,12 +12,11 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final JwtToAuthenticationConverter jwtToAuthenticationConverter;  // Adicionando a injeção de JwtToAuthenticationConverter
+    private final JwtToAuthenticationConverter jwtToAuthenticationConverter;
 
-    // Construtor para injeção de dependências
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, JwtToAuthenticationConverter jwtToAuthenticationConverter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-        this.jwtToAuthenticationConverter = jwtToAuthenticationConverter;  // Inicializando
+        this.jwtToAuthenticationConverter = jwtToAuthenticationConverter;
     }
 
     @Bean
@@ -26,10 +25,14 @@ public class SecurityConfig {
             .csrf(ServerHttpSecurity.CsrfSpec::disable)
             .cors(cors -> cors.configurationSource(request -> {
                 CorsConfiguration configuration = new CorsConfiguration();
-                configuration.setAllowedOrigins(List.of("http://127.0.0.1:8081")); 
+
+                // Permite qualquer origem, mesmo com credenciais
+                configuration.setAllowedOriginPatterns(List.of("*"));
+
                 configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                 configuration.setAllowedHeaders(List.of("*"));
                 configuration.setAllowCredentials(true);
+
                 return configuration;
             }))
             .authorizeExchange(exchanges -> exchanges
@@ -43,5 +46,4 @@ public class SecurityConfig {
 
         return http.build();
     }
-
 }
