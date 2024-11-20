@@ -10,6 +10,17 @@ const criarSalaContent = document.querySelector('.criar-sala-content');
 const inscreverSalaContent = document.querySelector('.inscrever-sala-content');
 const salaContainer = document.getElementById('salaContainer');
 
+const criarSalaRadio = document.getElementById('criarSalaRadio');
+const inscreverSalaRadio = document.getElementById('inscreverSalaRadio');
+const closeResponseModalBtn = document.getElementById('closeResponseModalBtn');
+const closePopupBtn = document.getElementById('closePopupBtn');
+
+closeResponseModalBtn.addEventListener('click', closeResponseModal);
+closePopupBtn.addEventListener('click', closePopup);
+criarSalaRadio.addEventListener('change', () => changeContent('criar-sala-content'));
+inscreverSalaRadio.addEventListener('change', () => changeContent('inscrever-sala-content'));
+
+
 document.addEventListener('DOMContentLoaded', () => {
   // Adicione o event listener após a garantia de que o DOM está carregado
   document.querySelector('.inscrever-sala-content .btn')?.addEventListener('click', inscreverSala);
@@ -59,6 +70,7 @@ function changeContent(contentId) {
     criarSalaContent.classList.remove('show');
   }
 }
+
 
 // Função para buscar e exibir as inscrições do usuário
 function fetchInscricoesUsuario() {
