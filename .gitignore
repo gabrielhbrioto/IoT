@@ -1,3 +1,4 @@
 /BackEnd/iot/target/*
 /BackEnd/iot/src/main/resources/application.properties
 target/
+DockerImages/iotbackend.tar
