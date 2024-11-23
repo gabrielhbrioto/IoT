@@ -54,6 +54,7 @@ public class MqttService {
 
         MqttConnectOptions connOpts = new MqttConnectOptions();
         connOpts.setCleanSession(true);
+        connOpts.setAutomaticReconnect(true);
         client.connect(connOpts);
         logger.info("Conexão com MQTT Broker estabelecida em {}", brokerUrl);
         subscribeToAllSalaTopics();

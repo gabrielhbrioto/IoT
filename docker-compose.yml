@@ -34,3 +34,18 @@ services:
     ports:
       - "${WEBAPP_PORTS}"
     restart: always
+
+  database:
+    build:
+      context: ./DataBase
+      dockerfile: Dockerfile
+    image: postgres_image
+    container_name: postgres_container
+    environment:
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: iot
+    volumes:
+      - database_data:/var/lib/postgresql/data
+
+volumes:
+  database_data:

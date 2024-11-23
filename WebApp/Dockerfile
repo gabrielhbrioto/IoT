@@ -21,8 +21,11 @@ FROM nginx:alpine
 # Copia os arquivos gerados para o diretório padrão do Nginx
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Expõe a porta 80 para acessar o site
-EXPOSE 80
+# Copia a configuração personalizada para o Nginx
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expõe a porta 8081 para acessar o site
+EXPOSE 8081
 
 # Comando para iniciar o Nginx
 CMD ["nginx", "-g", "daemon off;"]
