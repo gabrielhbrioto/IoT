@@ -8,6 +8,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
+/**
+ * Classe que representa um usuário.
+ * Mapeada para a tabela "USUARIO".
+ */
 @Table("USUARIO")
 public class Usuario implements UserDetails {
 
@@ -20,7 +24,6 @@ public class Usuario implements UserDetails {
 
     private String nome;
 
-    // Getter e Setter para o ID
     public Long getId() {
         return id;
     }
@@ -29,7 +32,6 @@ public class Usuario implements UserDetails {
         this.id = id;
     }
 
-    // Getter e Setter para o Email
     public String getEmail() {
         return email;
     }
@@ -38,7 +40,6 @@ public class Usuario implements UserDetails {
         this.email = email;
     }
 
-    // Getter e Setter para a Senha
     public String getSenha() {
         return senha;
     }
@@ -47,7 +48,6 @@ public class Usuario implements UserDetails {
         this.senha = senha;
     }
 
-    // Getter e Setter para o Nome
     public String getNome() {
         return nome;
     }
@@ -56,12 +56,8 @@ public class Usuario implements UserDetails {
         this.nome = nome;
     }
 
-    // Implementações da interface UserDetails
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Retorne uma coleção de autoridades. Aqui você pode retornar um conjunto de autoridades.
-        // Por enquanto, retornando uma coleção vazia, você pode modificar conforme necessário.
         return Collections.emptyList();
     }
 
@@ -72,26 +68,26 @@ public class Usuario implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.email; // Usando o email como nome de usuário
+        return this.email;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return true; // Ajuste conforme necessário
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true; // Ajuste conforme necessário
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true; // Ajuste conforme necessário
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return true; // Ajuste conforme necessário
+        return true;
     }
 }

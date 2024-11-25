@@ -1,9 +1,10 @@
 import '../../css/listagem-salas.css';
-
 import additionSymbol from '../../img/simb_mais.png';
 
+// Define a imagem do símbolo de adição
 document.getElementById('addition-symbol').src = additionSymbol;
 
+// Seleciona elementos do DOM
 const openPopupBtn = document.getElementById('openPopupBtn');
 const criarSalaPopup = document.getElementById('criarSalaPopup');
 const criarSalaContent = document.querySelector('.criar-sala-content');
@@ -15,28 +16,25 @@ const inscreverSalaRadio = document.getElementById('inscreverSalaRadio');
 const closeResponseModalBtn = document.getElementById('closeResponseModalBtn');
 const closePopupBtn = document.getElementById('closePopupBtn');
 
+// Adiciona eventos aos botões
 closeResponseModalBtn.addEventListener('click', closeResponseModal);
 closePopupBtn.addEventListener('click', closePopup);
 criarSalaRadio.addEventListener('change', () => changeContent('criar-sala-content'));
 inscreverSalaRadio.addEventListener('change', () => changeContent('inscrever-sala-content'));
 
-
+// Adiciona eventos após o DOM ser carregado
 document.addEventListener('DOMContentLoaded', () => {
-  // Adicione o event listener após a garantia de que o DOM está carregado
   document.querySelector('.inscrever-sala-content .btn')?.addEventListener('click', inscreverSala);
   document.querySelector('.criar-sala-content .btn')?.addEventListener('click', criarSala);
-
-  // Fecha o modal ao clicar no botão "Ok" ou no "X"
   document.getElementById('closeModal')?.addEventListener('click', closeResponseModal);
-  document.getElementById('closeBtn').addEventListener('click', showResponseModal); // Alterar para showResponseModal
+  document.getElementById('closeBtn').addEventListener('click', showResponseModal);
 });
 
-// Mostra o modal de resposta e recarrega a página
+// Função para mostrar o modal de resposta
 function showResponseModal() {
   console.log("aaa");
   document.getElementById('responseModal').style.display = 'none';
-  //fetchInscricoesUsuario();
-  window.location.reload(); // Recarrega a página
+  window.location.reload();
 }
 
 // Função para fechar o modal de resposta
@@ -44,23 +42,21 @@ function closeResponseModal() {
   document.getElementById('responseModal').style.display = 'none';
 }
 
-// Evento para fechar o modal ao clicar no botão "Ok"
+// Adiciona eventos para fechar o modal
 document.getElementById('closeBtn').addEventListener('click', closeResponseModal);
-
-// Evento para fechar o modal ao clicar no "X"
 document.querySelector('.modal .close-btn').addEventListener('click', closeResponseModal);
 
-// Exibe o popup ao clicar no botão de abrir
+// Abre o popup de criar sala
 openPopupBtn.addEventListener('click', () => {
   criarSalaPopup.style.display = 'block';
 });
 
-// Fecha o popup
+// Função para fechar o popup
 function closePopup() {
   criarSalaPopup.style.display = 'none';
 }
 
-// Alterna entre o conteúdo de criar sala e inscrever-se
+// Função para trocar o conteúdo exibido
 function changeContent(contentId) {
   if (contentId === 'criar-sala-content') {
     criarSalaContent.classList.add('show');
@@ -71,16 +67,13 @@ function changeContent(contentId) {
   }
 }
 
-
-// Função para buscar e exibir as inscrições do usuário
+// Função para buscar inscrições do usuário
 function fetchInscricoesUsuario() {
-  const token = sessionStorage.getItem('token'); // Recupera o token JWT
-  // Salva o botão add-card
+  const token = sessionStorage.getItem('token');
   const addCardButton = document.querySelector('.add-card');
   const criarSalaPopupDiv = document.querySelector('.popup');
   const responseModalDiv = document.querySelector('.modal');
 
-  // Limpa o container antes de adicionar novos cards
   salaContainer.innerHTML = '';
 
   fetch('http://localhost:8080/inscricoes/usuario', {
@@ -93,28 +86,26 @@ function fetchInscricoesUsuario() {
     if (!response.ok) {
       throw new Error('Network response was not ok ' + response.statusText);
     }
-    return response.json(); // Converte a resposta para JSON
+    return response.json();
   })
   .then(data => {
     data.forEach(inscricao => {
       criarCardSala(inscricao);
     });
 
-    // Adiciona o botão add-card de volta ao container
     salaContainer.appendChild(addCardButton);
     salaContainer.appendChild(criarSalaPopupDiv);
     salaContainer.appendChild(responseModalDiv);
 
   })
   .catch(error => {
-    console.error('Error ao buscar inscrições:', error); // Lida com erros
+    console.error('Error ao buscar inscrições:', error);
   });
 }
 
-
 // Função para criar um card de sala
 function criarCardSala(inscricao) {
-  const token = sessionStorage.getItem('token'); // Recupera o token JWT
+  const token = sessionStorage.getItem('token');
 
   fetch(`http://localhost:8080/salas/${inscricao.idSala}`, {
     method: 'GET',
@@ -129,21 +120,16 @@ function criarCardSala(inscricao) {
     return response.json();
   })
   .then(sala => {
-    // Cria o elemento de card
     const card = document.createElement('div');
     card.classList.add('card');
 
-    // Cria o conteúdo do card com o nome da sala obtido
     card.innerHTML = `
       <h2 class="card-title">${sala.nome}</h2>
       <p><b>ID:</b> ${sala.id}</p>
-      <!--<p><b>Status:</b> Livre</p>-->
       <p><b>ID do Criador:</b> ${sala.idCriador}</p>
       <a href="sala.html?id=${sala.id}">Ver mais</a>
     `;
 
-
-    // Adiciona o card ao container
     salaContainer.insertBefore(card, document.querySelector('.add-card'));
   })
   .catch(error => {
@@ -151,10 +137,10 @@ function criarCardSala(inscricao) {
   });
 }
 
-// Carrega as inscrições do usuário ao abrir a página
+// Carrega as inscrições do usuário ao carregar a página
 window.addEventListener('load', fetchInscricoesUsuario);
 
-// Configurações para o modal de criação e inscrição de sala
+// Função para criar uma nova sala
 function criarSala() {
   const nomeSala = document.getElementById('nomeSala').value;
   const token = sessionStorage.getItem('token');
@@ -175,21 +161,15 @@ function criarSala() {
     return response.json();
   })
   .then(data => {
-
-    // Exibe o modal com os detalhes da sala
     document.getElementById('modalId').innerText = data.sala.id;
     document.getElementById('modalNome').innerText = data.sala.nome;
     document.getElementById('modalIdCriador').innerText = data.sala.idCriador;
 
-    // Itera sobre os sensores e exibe o tipo e o ID de cada um
     const sensoresInfo = data.sensores.map(sensor => {
         return `<b>ID Sensor de ${sensor.tipo.charAt(0).toUpperCase() + sensor.tipo.slice(1).toLowerCase()}:</b> ${sensor.id}`;
-    }).join('<br>'); // Junta as informações em linhas separadas
+    }).join('<br>');
 
-    // Atualiza o elemento do modal com as informações dos sensores
     document.getElementById('modalSensorInfo').innerHTML = sensoresInfo;
-
-    // Mostra o modal
     document.getElementById('responseModal').style.display = 'block';
   })
   .catch(error => {
@@ -197,7 +177,7 @@ function criarSala() {
   });
 }
 
-// Configuração para o botão de inscrição
+// Função para inscrever-se em uma sala
 function inscreverSala() {
   const idSala = document.getElementById('idSala').value;
   const token = sessionStorage.getItem('token');
@@ -217,10 +197,7 @@ function inscreverSala() {
     return response.json();
   })
   .then(data => {
-    // Exibe uma mensagem de sucesso
     alert('Inscrição realizada com sucesso!');
-    
-    //fetchInscricoesUsuario();
     window.location.reload(); 
   })
   .catch(error => {
@@ -229,8 +206,8 @@ function inscreverSala() {
   });
 }
 
+// Adiciona evento para logout
 document.getElementById('logoutBtn').addEventListener('click', () => {
-  sessionStorage.clear(); // Limpa todo o conteúdo do sessionStorage
-  window.location.href = '/'; // Redireciona para a página de login
+  sessionStorage.clear();
+  window.location.href = '/';
 });
-

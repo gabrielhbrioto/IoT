@@ -7,9 +7,19 @@ import io.r2dbc.postgresql.PostgresqlConnectionConfiguration;
 import io.r2dbc.postgresql.PostgresqlConnectionFactory;
 import io.r2dbc.spi.ConnectionFactory;
 
+/**
+ * Configura o banco de dados usando parâmetros do arquivo de propriedades da aplicação.
+ * 
+ * Os parâmetros são importados com @Value e usados para criar uma ConnectionFactory para PostgreSQL.
+ */
+
 @Configuration
 public class DatabaseConfig {
 
+/**
+ * A anotação @Value é usada para injetar valores das propriedades definidas no arquivo de 
+ * configuração da aplicação.
+ */
     @Value("${spring.r2dbc.host}")
     private String host;
 
@@ -25,6 +35,11 @@ public class DatabaseConfig {
     @Value("${spring.r2dbc.password}")
     private String password;
 
+    /**
+     * Cria e configura uma instância de ConnectionFactory para conexão com o banco de dados PostgreSQL.
+     *
+     * @return uma instância configurada de PostgresqlConnectionFactory
+     */
     @Bean
     public ConnectionFactory connectionFactory() {
         return new PostgresqlConnectionFactory(

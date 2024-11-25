@@ -3,17 +3,18 @@ package com.iot.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
+/**
+ * Classe que representa uma inscrição.
+ * Mapeada para a tabela "INSCRICAO".
+ */
 @Table("INSCRICAO")
 public class Inscricao {
 
     @Id
-    private Long id;
+    private Long id; 
+    private Long idSala; 
+    private Long idUsuario; 
 
-    private Long idSala; // Armazena apenas o ID da Sala
-
-    private Long idUsuario; // Armazena apenas o ID do Usuário
-
-    // Getter e Setter para o ID
     public Long getId() {
         return id;
     }
@@ -22,7 +23,6 @@ public class Inscricao {
         this.id = id;
     }
 
-    // Getter e Setter para o ID da Sala
     public Long getIdSala() {
         return idSala;
     }
@@ -31,7 +31,6 @@ public class Inscricao {
         this.idSala = idSala;
     }
 
-    // Getter e Setter para o ID do Usuário
     public Long getIdUsuario() {
         return idUsuario;
     }

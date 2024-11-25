@@ -6,9 +6,7 @@ import reactor.core.publisher.Flux;
 import java.time.ZonedDateTime;
 
 public interface MedidaRepository extends R2dbcRepository<Medida, Long> {
-    // Método para encontrar medidas por ID da sala
-    Flux<Medida> findByIdSala(Long idSala);
-
-    // Método para encontrar medidas por ID da sala em um período
-    Flux<Medida> findByIdSalaAndHorarioBetween(Long idSala, ZonedDateTime inicio, ZonedDateTime fim);
+    
+    Flux<Medida> findByIdSala(Long idSala); // Encontra medidas por ID da sala
+    Flux<Medida> findByIdSalaAndHorarioBetween(Long idSala, ZonedDateTime inicio, ZonedDateTime fim); // Encontra medidas por ID da sala em um período
 }

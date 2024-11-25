@@ -8,6 +8,11 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+/**
+ * Controlador REST para gerenciar inscrições.
+ * 
+ * Mapeia as requisições HTTP para os endpoints relacionados às inscrições.
+ */
 @RestController
 @RequestMapping("/inscricoes")
 public class InscricaoController {
@@ -16,38 +21,63 @@ public class InscricaoController {
     private final JwtUtil jwtUtil;
     private final UsuarioService usuarioService;
 
+    /**
+     * Construtor para inicializar os serviços necessários.
+     * 
+     * @param inscricaoService Serviço de inscrição
+     * @param jwtUtil Utilitário JWT
+     * @param usuarioService Serviço de usuário
+     */
     public InscricaoController(InscricaoService inscricaoService, JwtUtil jwtUtil, UsuarioService usuarioService) {
         this.inscricaoService = inscricaoService;
         this.jwtUtil = jwtUtil;
         this.usuarioService = usuarioService;
     }
 
+    /**
+     * Cria uma nova inscrição.
+     * 
+     * @param inscricao Objeto de inscrição a ser criado
+     * @param authToken Token de autorização JWT
+     * @return Mono<Inscricao> Inscrição criada
+     */
     @PostMapping
     public Mono<Inscricao> createInscricao(@RequestBody Inscricao inscricao, 
                                            @RequestHeader("Authorization") String authToken) {
         String token = authToken.replace("Bearer ", "");
-        Long userId = jwtUtil.extractUserId(token); // Extrai o ID do usuário do token JWT
-        inscricao.setIdUsuario(userId); // Define o ID do usuário no objeto inscrição
+        Long userId = jwtUtil.extractUserId(token);
+        inscricao.setIdUsuario(userId);
                                         
         return inscricaoService.createInscricao(inscricao);
     }
 
+    /**
+     * Obtém todas as inscrições de um usuário.
+     * 
+     * @param authToken Token de autorização JWT
+     * @return Flux<Inscricao> Lista de inscrições do usuário
+     */
     @GetMapping("/usuario")
     public Flux<Inscricao> getInscricoesByUsuario(@RequestHeader("Authorization") String authToken) {
         String token = authToken.replace("Bearer ", "");
-        Long userId = jwtUtil.extractUserId(token); // Extrai o ID do usuário do token JWT
+        Long userId = jwtUtil.extractUserId(token);
         
         return inscricaoService.getInscricoesByUsuarioId(userId);
     }
 
-    // Novo endpoint para cancelar uma inscrição de uma sala específica
+    /**
+     * Deleta uma inscrição de um usuário por ID da sala.
+     * 
+     * @param idSala ID da sala
+     * @param authToken Token de autorização JWT
+     * @return Mono<Void> Indica a conclusão da operação
+     */
     @DeleteMapping("/usuario/sala/{idSala}")
     public Mono<Void> deleteInscricaoBySala(@PathVariable Long idSala,
                                             @RequestHeader("Authorization") String authToken) {
         String token = authToken.replace("Bearer ", "");
-        Long userId = jwtUtil.extractUserId(token); // Extrai o ID do usuário do token JWT
+        Long userId = jwtUtil.extractUserId(token);
         
-        // Chama o serviço para excluir a inscrição com o ID do usuário e o ID da sala
         return inscricaoService.deleteByUserIdAndSalaId(userId, idSala);
     }
 }

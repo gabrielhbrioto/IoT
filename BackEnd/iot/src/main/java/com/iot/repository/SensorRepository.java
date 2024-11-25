@@ -5,5 +5,5 @@ import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import reactor.core.publisher.Flux;
 
 public interface SensorRepository extends R2dbcRepository<Sensor, Long> {
-    Flux<Sensor> findByIdSala(Long idSala); // Método para buscar sensores por sala
+    Flux<Sensor> findByIdSala(Long idSala); // Busca sensores por sala
 }

@@ -1,21 +1,22 @@
 package com.iot.dto;
 
+/**
+ * Classe que representa uma requisição de autenticação.
+ * Contém os campos necessários para autenticar um usuário.
+ */
 public class AuthenticationRequest {
 
     private String username;
     private String password;
 
-    // Construtor vazio
     public AuthenticationRequest() {
     }
 
-    // Construtor com parâmetros
     public AuthenticationRequest(String username, String password) {
         this.username = username;
         this.password = password;
     }
 
-    // Getters e setters
     public String getUsername() {
         return username;
     }

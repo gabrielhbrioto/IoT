@@ -1,15 +1,23 @@
 package com.iot.dto;
 
+/**
+ * Classe que representa a resposta de login.
+ */
 public class LoginResponse {
-    private String token;
-    private Long userId; // Ou o tipo correspondente ao ID do usuário
+    private String token; 
+    private Long userId; 
 
+    /**
+     * Construtor da classe LoginResponse.
+     * 
+     * @param token Token de autenticação do usuário
+     * @param userId ID do usuário
+     */
     public LoginResponse(String token, Long userId) {
         this.token = token;
         this.userId = userId;
     }
 
-    // Getters e Setters
     public String getToken() {
         return token;
     }

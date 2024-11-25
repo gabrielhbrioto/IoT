@@ -18,8 +18,6 @@ services:
     container_name: ${BACKEND_CONTAINER}
     depends_on:
       - mosquitto
-    ports:
-      - "${BACKEND_PORTS}"
     restart: always
 
   webapp:

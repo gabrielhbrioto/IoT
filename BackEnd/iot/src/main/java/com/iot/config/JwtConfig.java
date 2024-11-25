@@ -9,12 +9,27 @@ import org.springframework.security.oauth2.jwt.NimbusReactiveJwtDecoder;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+/**
+ * Configuração para decodificação de JWT (JSON Web Token).
+ * 
+ * Esta classe configura um decodificador JWT reativo usando uma chave secreta.
+ */
 @Configuration
 public class JwtConfig {
 
+    /**
+     * A chave secreta usada para assinar e verificar tokens JWT.
+     * 
+     * Valor injetado a partir das propriedades da aplicação.
+     */
     @Value("${app.secret.key}")
     private String secretKey;
     
+    /**
+     * Cria um bean de ReactiveJwtDecoder configurado com a chave secreta.
+     * 
+     * @return um decodificador JWT reativo configurado.
+     */
     @Bean
     public ReactiveJwtDecoder reactiveJwtDecoder() {
         // Converte a chave secreta para SecretKey

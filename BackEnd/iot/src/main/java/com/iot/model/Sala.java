@@ -3,6 +3,10 @@ package com.iot.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
+/**
+ * Classe que representa uma sala.
+ * Mapeada para a tabela "SALA".
+ */
 @Table("SALA")
 public class Sala {
     
@@ -15,7 +19,6 @@ public class Sala {
 
     private String estado; 
     
-    // Getters e Setters
     public Long getId() {
         return id;
     }

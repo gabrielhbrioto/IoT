@@ -5,11 +5,10 @@ let graficoConsumo;
 document.addEventListener('DOMContentLoaded', () => {
     const params = new URLSearchParams(window.location.search);
     const salaId = params.get('id');
-    const userId = sessionStorage.getItem('ID'); // Obtém o ID do usuário
+    const userId = sessionStorage.getItem('ID');
     const token = sessionStorage.getItem('token');
 
     if (salaId) {
-        // Faz a requisição para obter o estado inicial da sala
         fetch(`http://localhost:8080/salas/${salaId}/estado`, {
             method: 'GET',
             headers: {
@@ -20,10 +19,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) {
                 throw new Error('Erro ao carregar estado da sala');
             }
-            return response.text(); // Recebe o estado como texto
+            return response.text();
         })
         .then(estado => {
-            // Define o botão inicial com base no estado recebido
             switch (estado.toLowerCase()) {
                 case 'acender':
                     selecionarOpcao(1);
@@ -40,7 +38,6 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(error => console.error('Erro ao carregar estado da sala:', error));
 
-        // Carrega os dados gerais da sala
         fetch(`http://localhost:8080/salas/${salaId}`, {
             method: 'GET',
             headers: {
@@ -57,7 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('salaTitulo').textContent = `Sala ${sala.nome}`;
             document.getElementById('salaId').textContent = `ID: ${sala.id}`;
 
-            // Verifica se o usuário é o criador da sala
             if (sala.idCriador === parseInt(userId, 10)) {
                 document.getElementById('btnExcluir').style.display = 'block';
                 document.getElementById('btnExcluir').onclick = () => excluirSala(sala.id);
@@ -85,27 +81,40 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(error => console.error('Erro ao carregar dados:', error));
     }
 
-    // Adiciona event listeners ao botão e elementos de período
     const btnEnviar = document.getElementById('btnEnviar');
     const periodoRadios = document.querySelectorAll('input[name="consumo"]');
     const periodoSelect = document.getElementById('periodo');
 
-    // Função para capturar o período selecionado e enviar a requisição
+    /**
+     * Captura o período selecionado pelo usuário e envia uma requisição para obter medidas de consumo de energia.
+     * 
+     * @function capturarPeriodoEEnviarRequisicao
+     * 
+     * @description Esta função captura o período selecionado pelo usuário a partir de um conjunto de opções de rádio,
+     * calcula a data de início com base no período selecionado e envia uma requisição GET para obter as medidas de consumo
+     * de energia dentro do período especificado. Os dados recebidos são usados para atualizar um gráfico de consumo de energia.
+     * 
+     * @throws {Error} Lança um erro se a resposta da requisição não for bem-sucedida.
+     * 
+     * @example
+     * // Exemplo de uso:
+     * capturarPeriodoEEnviarRequisicao();
+     */
     function capturarPeriodoEEnviarRequisicao() {
         let inicio;
-        let fim = new Date().toISOString(); // Data de término é agora em formato ISO
+        let fim = new Date().toISOString();
         const agora = new Date();
         const valorSelecionado = document.querySelector('input[name="consumo"]:checked').value;
 
         switch (valorSelecionado) {
             case '24 horas':
-                inicio = new Date(agora.getTime() - 24 * 60 * 60 * 1000).toISOString(); // 24 horas atrás
+                inicio = new Date(agora.getTime() - 24 * 60 * 60 * 1000).toISOString();
                 break;
             case '1 semana':
-                inicio = new Date(agora.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString(); // 1 semana atrás
+                inicio = new Date(agora.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
                 break;
             case '1 mês':
-                inicio = new Date(agora.setMonth(agora.getMonth() - 1)).toISOString(); // 1 mês atrás
+                inicio = new Date(agora.setMonth(agora.getMonth() - 1)).toISOString();
                 break;
             case 'outro':
                 const outroPeriodo = parseInt(document.getElementById('outro').value, 10);
@@ -115,7 +124,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
-                // Calcula o início baseado na unidade selecionada
                 if (unidadePeriodo === 'hora') {
                     inicio = new Date(agora.getTime() - outroPeriodo * 60 * 60 * 1000).toISOString();
                 } else if (unidadePeriodo === 'dia') {
@@ -131,7 +139,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
         }
 
-        // Faz a requisição ao backend
         fetch(`http://localhost:8080/medidas/periodo?idSala=${salaId}&inicio=${encodeURIComponent(inicio)}&fim=${encodeURIComponent(fim)}`, {
             method: 'GET',
             headers: {
@@ -145,7 +152,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return response.json();
         })
         .then(dados => {
-            // Manipula os dados recebidos e gera o gráfico
             const labels = dados.map(d => new Date(d.horario).toLocaleTimeString());
             const valores = dados.map(d => d.valor);
 
@@ -156,12 +162,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             graficoConsumo = new Chart(ctx, {
-                type: 'line', // Tipo de gráfico
+                type: 'line',
                 data: {
-                    labels: labels, // Horários como labels
+                    labels: labels,
                     datasets: [{
                         label: 'Consumo de energia [W]',
-                        data: valores, // Valores do sensor
+                        data: valores,
                         borderColor: 'rgba(192, 135, 75, 1)',
                         borderWidth: 2,
                         pointRadius: 0
@@ -181,7 +187,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Adiciona o event listener ao botão
     btnEnviar.addEventListener('click', capturarPeriodoEEnviarRequisicao);
 });
 

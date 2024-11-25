@@ -24,11 +24,12 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-
+/**
+ * Controlador REST para gerenciar operações relacionadas a Salas.
+ */
 @RestController
 @RequestMapping("/salas")
 public class SalaController {
-
 
     @Autowired
     private SalaRepository salaRepository;
@@ -44,6 +45,9 @@ public class SalaController {
     private final JwtUtil jwtUtil;
     private final UsuarioService usuarioService;
 
+    /**
+     * Construtor para injeção de dependências.
+     */
     public SalaController(SalaService salaService, SensorService sensorService, JwtUtil jwtUtil, UsuarioService usuarioService, InscricaoService inscricaoService, MqttService mqttService) { 
         this.salaService = salaService;
         this.sensorService = sensorService; 
@@ -53,11 +57,21 @@ public class SalaController {
         this.mqttService = mqttService;
     }
 
+    /**
+     * Obtém todas as salas.
+     * @return Flux<Sala> - fluxo de salas.
+     */
     @GetMapping
     public Flux<Sala> getAllSalas() {
         return salaService.listarSalas();
     }
 
+    /**
+     * Cria uma nova sala.
+     * @param sala - objeto Sala a ser criado.
+     * @param authToken - token de autenticação.
+     * @return Mono<ResponseEntity<Map<String, Object>>> - resposta contendo a nova sala, sensores e inscrição.
+     */
     @PostMapping
     public Mono<ResponseEntity<Map<String, Object>>> createSala(@RequestBody Sala sala, @RequestHeader("Authorization") String authToken) {
         String token = authToken.replace("Bearer ", "");
@@ -72,14 +86,12 @@ public class SalaController {
                         String topic = novaSala.getId() + "/medidas";
   
                         try {
-                            mqttService.subscribe(topic); // Tenta se inscrever no tópico
+                            mqttService.subscribe(topic);
                         } catch (MqttException e) {
-                            // Inscrição falhou, então a sala é removida
                             return salaService.deletarSalaComInscricoes(novaSala.getId())
                                 .then(Mono.error(new RuntimeException("Erro ao se inscrever no tópico MQTT: " + e.getMessage())));
                         }
 
-                        // Se a inscrição for bem-sucedida, continue com a criação dos sensores e inscrição
                         Sensor sensorPresenca = new Sensor();
                         sensorPresenca.setIdSala(novaSala.getId());
                         sensorPresenca.setTipo("PRESENCA");
@@ -121,6 +133,11 @@ public class SalaController {
             });
     }
 
+    /**
+     * Obtém uma sala pelo ID.
+     * @param id - ID da sala.
+     * @return Mono<ResponseEntity<Sala>> - resposta contendo a sala encontrada.
+     */
     @GetMapping("/{id}")
     public Mono<ResponseEntity<Sala>> getSalaById(@PathVariable Long id) {
         return salaService.buscarSalaPorId(id)
@@ -128,9 +145,14 @@ public class SalaController {
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
+    /**
+     * Atualiza uma sala existente.
+     * @param id - ID da sala a ser atualizada.
+     * @param sala - objeto Sala com os novos dados.
+     * @return Mono<ResponseEntity<Sala>> - resposta contendo a sala atualizada.
+     */
     @PutMapping("/{id}")
     public Mono<ResponseEntity<Sala>> updateSala(@PathVariable Long id, @RequestBody Sala sala) {
-        // Aqui, você precisaria implementar um método de atualização no SalaService
         return salaService.buscarSalaPorId(id)
                 .flatMap(existingSala -> {
                     existingSala.setNome(sala.getNome());
@@ -141,6 +163,11 @@ public class SalaController {
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
+    /**
+     * Deleta uma sala pelo ID.
+     * @param id - ID da sala a ser deletada.
+     * @return Mono<ResponseEntity<String>> - resposta indicando o sucesso ou falha da operação.
+     */
     @DeleteMapping("/{id}")
     public Mono<ResponseEntity<String>> deleteSala(@PathVariable Long id) {
         return salaRepository.findById(id)
@@ -150,10 +177,15 @@ public class SalaController {
             .onErrorResume(e -> Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao deletar a sala: " + e.getMessage())));
     }
 
+    /**
+     * Atualiza o estado de uma sala e envia uma mensagem MQTT.
+     * @param id - ID da sala.
+     * @param request - mapa contendo a mensagem com o novo estado.
+     * @return Mono<ResponseEntity<String>> - resposta indicando o sucesso ou falha da operação.
+     */
     @PostMapping("/{id}/estado")
     public Mono<ResponseEntity<String>> atualizarEstadoEEnviarMensagemMqtt(@PathVariable Long id, @RequestBody Map<String, String> request) {
         String novoEstado = request.get("mensagem");
-        // Valida o novo estado com base nos valores permitidos pela restrição do banco
         if (!"acender".equalsIgnoreCase(novoEstado) && !"automatico".equalsIgnoreCase(novoEstado) && !"apagar".equalsIgnoreCase(novoEstado)) {
             return Mono.just(ResponseEntity.badRequest().body("Estado inválido. Os estados permitidos são: 'acender', 'automatico', 'apagar'."));
         }
@@ -175,12 +207,15 @@ public class SalaController {
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
+    /**
+     * Obtém o estado atual de uma sala.
+     * @param id - ID da sala.
+     * @return Mono<ResponseEntity<String>> - resposta contendo o estado da sala.
+     */
     @GetMapping("/{id}/estado")
     public Mono<ResponseEntity<String>> obterEstadoSala(@PathVariable Long id) {
         return salaService.buscarSalaPorId(id)
                 .map(sala -> ResponseEntity.ok(sala.getEstado()))
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
-
-
 }

@@ -2,6 +2,10 @@ package com.iot.model;
 
 import org.springframework.data.annotation.Id;
 
+/**
+ * Classe que representa um sensor.
+ * Mapeada para a tabela "SENSOR".
+ */
 public class Sensor {
 
     @Id
@@ -9,17 +13,14 @@ public class Sensor {
     private Long idSala; 
     private String tipo;
 
-    // Construtor padrão
     public Sensor() {}
 
-    // Construtor com parâmetros
     public Sensor(Long id, Long idSala, String tipo) {
         this.id = id;
         this.idSala = idSala;
-        setTipo(tipo); // Usa o setter para validar
+        setTipo(tipo);
     }
 
-    // Getters e Setters
     public Long getId() {
         return id;
     }
