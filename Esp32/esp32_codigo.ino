@@ -8,7 +8,6 @@
 #define BUTTON_PRESS_TIME 5000  // Tempo em milissegundos (5 segundos) para resetar
 #define PIR_PIN 4               // Pino do sensor de presença
 #define RELAY_PIN 5             // Pino do modulo rele onde será conectado a lampada
-#define VOLTAGE_SENSOR_PIN 34   // Pino do sensor de tensao
 #define CURRENT_SENSOR_PIN 35   // Pino do sensor de corrente
 
 // Variáveis de configuração do broker MQTT
@@ -26,14 +25,13 @@ const char* mqttPassword = "SENHA_MQTT"; // Senha MQTT, se necessário
 // Variável para armazenar o fuso horário configurado pelo usuário
 char timezone[10] = "BRT3"; // Fuso horário padrão (Brasil)
 
-float voltage = 0;
+float voltage = 3.3;
 float current = 0;
+float zero_sensor_value = 0;  // Zero do sensor de corrente
 float energyWh = 0;
 unsigned long lastTime = 0;
 unsigned long lastMovementTime = 0;
 int val = 0;  // Guarda o estado de leitura do sensor de presença
-const float voltageCalibration = 220.0;
-const float currentCalibration = 10.0;
 bool lightsOn = false;
 bool autoLight = true;  // Modo de luz automatico
 
@@ -158,24 +156,37 @@ String getTime() {
   return String(timeStringBuff);
 }
 
-float readVoltage() {
-  int sensorValue = analogRead(VOLTAGE_SENSOR_PIN);
-  return (sensorValue / 4096.0) * 3.3 * voltageCalibration;
+// Auto-zero do sensor
+void autoZero(){
+  Serial.println("Fazendo o Auto ZERO do Sensor...");
+  float aux = 0;
+
+  for(int i = 0; i < 1000 ; i++){
+    aux += analogRead(CURRENT_SENSOR_PIN);
+    delayMicroseconds(1);  
+  }
+  zero_sensor_value = (float) aux / 1000.0;
 }
 
 float readCurrent() {
-  int sensorValue = analogRead(CURRENT_SENSOR_PIN);
-  return (sensorValue / 4096.0) * 3.3 * currentCalibration;
+ float aux = 0;
+ float sensorValue = 0;
+
+  for(int i = 0; i < 1000 ; i++){
+    aux += analogRead(CURRENT_SENSOR_PIN);
+    delayMicroseconds(10);  
+  }
+  sensorValue = (float) aux / 1000.0;
+  return (zero_sensor_value - sensorValue)/66.0 * 0.805 * 10000;
 }
 
 void calculateEnergy() {
-  voltage = readVoltage();
   current = readCurrent();
 
   unsigned long currentTime = millis();
   unsigned long timeElapsed = currentTime - lastTime;
   
-  energyWh += (voltage * current * timeElapsed) / (1000.0 * 3600.0);
+  energyWh = (voltage * current * timeElapsed) / (1000.0 * 3600.0);
   lastTime = currentTime;
 }
 
@@ -252,6 +263,7 @@ void setup() {
   pinMode(PIR_PIN, INPUT);
   pinMode(RELAY_PIN, OUTPUT);
   pinMode(LED_PIN, OUTPUT);
+  autoZero();
 
 
   // Configuração da interrupção para o botão de boot
@@ -313,11 +325,12 @@ void loop() {
   }
   client.loop();
 
+  calculateEnergy();
   // Envio de mensagem MQTT com valor e timestamp
-  int randomNumber = random(1, 10);
-  String powerMessage = String(randomNumber + 90) + " | " + getTime();
+  String powerMessage = String(energyWh) + " | " + getTime();
   Serial.println(powerMessage);
   client.publish(topic_medidas.c_str(), powerMessage.c_str());
+  energyWh = 0;
 
   delay(1000);
 }
