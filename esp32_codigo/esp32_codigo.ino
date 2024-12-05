@@ -39,6 +39,11 @@ bool autoLight = true;  // Modo de luz automatico
 volatile unsigned long buttonPressStart = 0;
 volatile bool buttonPressDetected = false;
 
+// Parametros do Filtro de Kalman
+float current_est = 0;   // Estimativa inicial de corrente
+float P_current = 1;     // Incerteza inicial
+float Q_current = 0.01;  // Variância do processo (ajustável)
+float R_current = 0.5;   // Variância do ruído de medição (ajustável)
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -168,6 +173,19 @@ void autoZero(){
   zero_sensor_value = (float) aux / 1000.0;
 }
 
+float kalmanFilterCurrent(float measurement) {
+    // Previsão
+    float current_pred = current_est;        // Previsão do estado (corrente estimada)
+    float P_pred = P_current + Q_current;    // Previsão da incerteza
+
+    // Atualização
+    float K = P_pred / (P_pred + R_current); // Ganho de Kalman
+    current_est = current_pred + K * (measurement - current_pred); // Atualização da estimativa
+    P_current = (1 - K) * P_pred;            // Atualização da incerteza
+
+    return current_est;
+}
+
 float readCurrent() {
  float aux = 0;
  float sensorValue = 0;
@@ -177,7 +195,9 @@ float readCurrent() {
     delayMicroseconds(10);  
   }
   sensorValue = (float) aux / 1000.0;
-  return (zero_sensor_value - sensorValue)/66.0 * 0.805 * 10000;
+  float currentReading = (zero_sensor_value - sensorValue) / 66.0 * 0.805 * 10000;
+
+  return kalmanFilterCurrent(currentReading);
 }
 
 void calculateEnergy() {
@@ -332,5 +352,5 @@ void loop() {
   client.publish(topic_medidas.c_str(), powerMessage.c_str());
   energyWh = 0;
 
-  delay(1000);
+  delay(500);
 }
